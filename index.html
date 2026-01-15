@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spherecho Productions | Where Art Echoes Beyond Boundaries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-charcoal: #0D0D0D;
+            --charcoal: #1A1A1A;
+            --medium-charcoal: #2D2D2D;
+            --light-charcoal: #404040;
+            --off-white: #F5F5F5;
+            --muted-white: #E0E0E0;
+            --electric-cobalt: #2E5BFF;
+            --cobalt-glow: rgba(46, 91, 255, 0.3);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--deep-charcoal);
+            color: var(--off-white);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Smooth Transitions for All Elements */
+        *, *::before, *::after {
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--charcoal);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--electric-cobalt);
+            border-radius: 4px;
+        }
+
+        /* Navigation - Floating Minimal Design */
+        nav {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            z-index: 1000;
+            padding: 0.6rem 1rem;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 100px;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        nav::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 100px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent, rgba(46, 91, 255, 0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        nav.scrolled {
+            top: 1rem;
+            padding: 0.5rem 0.8rem;
+            background: rgba(13, 13, 13, 0.85);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4),
+                        0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        nav.nav-hidden {
+            transform: translateX(-50%) translateY(-150%);
+            opacity: 0;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            padding: 0.5rem 0.9rem;
+            border-radius: 50px;
+            display: block;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-links a:hover {
+            color: var(--off-white);
+        }
+
+        .nav-links a:hover::before {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-links a::after {
+            display: none;
+        }
+
+        .nav-cta {
+            background: var(--electric-cobalt) !important;
+            color: var(--off-white) !important;
+            font-weight: 600 !important;
+            padding: 0.5rem 1.2rem !important;
+            margin-left: 0.25rem;
+            box-shadow: 0 2px 15px rgba(46, 91, 255, 0.3);
+        }
+
+        .nav-cta::before {
+            background: transparent !important;
+        }
+
+        .nav-cta:hover {
+            background: #4070ff !important;
+            transform: scale(1.02);
+            box-shadow: 0 4px 25px rgba(46, 91, 255, 0.5) !important;
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .mobile-menu span {
+            width: 18px;
+            height: 1.5px;
+            background: var(--off-white);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 120px 5% 80px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--electric-cobalt);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: rgba(46, 91, 255, 0.1);
+            border: 1px solid rgba(46, 91, 255, 0.2);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(46, 91, 255, 0.15);
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: heroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s;
+        }
+
+        @keyframes heroFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .hero-title .kinetic {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(135deg, var(--electric-cobalt), #6B8AFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--muted-white);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.7s;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--electric-cobalt), #4070ff);
+            color: var(--off-white);
+            box-shadow: 0 5px 20px rgba(46, 91, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(46, 91, 255, 0.4), 0 0 30px rgba(46, 91, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--off-white);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 120px 5%;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: left;
+            max-width: 700px;
+            margin: 0 0 4rem;
+            padding: 0;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--electric-cobalt);
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(46, 91, 255, 0.1);
+            border-radius: 50px;
+            border: 1px solid rgba(46, 91, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--off-white) 0%, rgba(255, 255, 255, 0.7) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--muted-white);
+            line-height: 1.7;
+        }
+
+        /* About Section */
+        .about {
+            background: linear-gradient(180deg, var(--deep-charcoal) 0%, var(--charcoal) 100%);
+        }
+
+        .about-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(46, 91, 255, 0.1), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .about-card:hover::before {
+            left: 100%;
+        }
+
+        .about-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: rgba(46, 91, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(46, 91, 255, 0.1);
+        }
+            height: 3px;
+            background: linear-gradient(90deg, var(--electric-cobalt), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .about-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--cobalt-glow);
+        }
+
+        .about-card:hover::before {
+            opacity: 1;
+        }
+
+        .about-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .about-card p {
+            color: var(--muted-white);
+            line-height: 1.8;
+        }
+
+        .about-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--electric-cobalt), #4070ff);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(46, 91, 255, 0.3);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .about-card:hover .about-icon {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 15px 40px rgba(46, 91, 255, 0.5);
+        }
+
+        /* Services Section */
+        .services {
+            background: var(--charcoal);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: linear-gradient(145deg, rgba(45, 45, 45, 0.3), rgba(26, 26, 26, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(46, 91, 255, 0.15), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--electric-cobalt), transparent);
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-20px) scale(1.03);
+            border-color: rgba(46, 91, 255, 0.2);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.4), 0 0 50px rgba(46, 91, 255, 0.1);
+        }
+
+        .service-card:hover::after {
+            width: 80%;
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-card:hover .service-icon {
+            background: linear-gradient(135deg, var(--electric-cobalt), #4070ff);
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 10px 30px rgba(46, 91, 255, 0.4);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: var(--muted-white);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Directors Section */
+        .directors {
+            background: linear-gradient(180deg, var(--charcoal) 0%, var(--deep-charcoal) 100%);
+        }
+
+        .director-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .director-card:hover {
+            transform: translateY(-12px) rotateX(2deg) scale(1.02);
+            border-color: rgba(46, 91, 255, 0.25);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(46, 91, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .director-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--medium-charcoal), var(--charcoal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--electric-cobalt);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .director-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(transparent, var(--glass-bg));
+        }
+
+        .director-info {
+            padding: 1.5rem;
+        }
+
+        .director-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .director-info p {
+            font-size: 0.85rem;
+            color: var(--muted-white);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .director-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--electric-cobalt);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .director-link:hover {
+            gap: 0.75rem;
+        }
+
+        .director-link svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .director-link:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(180deg, var(--deep-charcoal) 0%, var(--charcoal) 50%, var(--deep-charcoal) 100%);
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            padding: 4rem 3rem;
+            backdrop-filter: blur(30px);
+            position: relative;
+            overflow: hidden;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: -150px;
+            right: -150px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(46, 91, 255, 0.2), transparent 60%);
+            animation: floatUp 6s ease-in-out infinite;
+        }
+
+        .contact-card::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(46, 91, 255, 0.15), transparent 60%);
+            animation: floatUp 8s ease-in-out infinite reverse;
+        }
+
+        .contact-card h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .contact-card > p {
+            color: var(--muted-white);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            color: var(--off-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            background: var(--electric-cobalt);
+            border-color: var(--electric-cobalt);
+            transform: translateX(10px);
+        }
+
+        .contact-link svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--deep-charcoal);
+            border-top: 1px solid var(--glass-border);
+            padding: 4rem 5% 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-main {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand p {
+            color: var(--muted-white);
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 350px;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--off-white);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--muted-white);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--electric-cobalt);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            color: var(--light-charcoal);
+            font-size: 0.85rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--electric-cobalt);
+            border-color: var(--electric-cobalt);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            nav {
+                left: 1rem;
+                right: 1rem;
+                transform: translateX(0);
+                width: auto;
+                padding: 0.5rem 0.75rem;
+            }
+
+            nav.nav-hidden {
+                transform: translateY(-150%);
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(13, 13, 13, 0.98);
+                backdrop-filter: blur(30px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 1.5rem;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            .nav-links.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-links a {
+                font-size: 1.5rem;
+                font-weight: 600;
+                padding: 1rem 2rem;
+            }
+
+            .nav-cta {
+                margin-left: 0 !important;
+                margin-top: 1rem;
+                padding: 1rem 2.5rem !important;
+                font-size: 1rem !important;
+            }
+
+            .mobile-menu {
+                display: flex;
+                z-index: 1001;
+            }
+
+            .mobile-menu.active span:nth-child(1) {
+                transform: rotate(45deg) translate(4px, 4px);
+            }
+
+            .mobile-menu.active span:nth-child(2) {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+
+            .mobile-menu.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(4px, -4px);
+            }
+
+            .footer-main {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .footer-brand p {
+                max-width: none;
+            }
+
+            .footer-bottom {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .contact-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .marquee-container::before,
+            .marquee-container::after {
+                width: 50px;
+            }
+        }
+
+        /* Scroll Animations - Bi-directional Reveals */
+        .reveal {
+            opacity: 0;
+            transform: translateY(80px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal.out {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+
+        /* Reveal from left */
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-80px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-left.out {
+            opacity: 0;
+            transform: translateX(80px);
+        }
+
+        /* Reveal from right */
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(80px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right.out {
+            opacity: 0;
+            transform: translateX(-80px);
+        }
+
+        /* Scale reveal */
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-scale.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .reveal-scale.out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        /* Staggered Animation Delays */
+        .reveal:nth-child(1), .reveal-left:nth-child(1), .reveal-right:nth-child(1) { transition-delay: 0s; }
+        .reveal:nth-child(2), .reveal-left:nth-child(2), .reveal-right:nth-child(2) { transition-delay: 0.1s; }
+        .reveal:nth-child(3), .reveal-left:nth-child(3), .reveal-right:nth-child(3) { transition-delay: 0.15s; }
+        .reveal:nth-child(4), .reveal-left:nth-child(4), .reveal-right:nth-child(4) { transition-delay: 0.2s; }
+        .reveal:nth-child(5) { transition-delay: 0.25s; }
+        .reveal:nth-child(6) { transition-delay: 0.3s; }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Parallax sections */
+        .parallax-section {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* Parallax Float Effect */
+        @keyframes floatUp {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Glow Pulse Effect */
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(46, 91, 255, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(46, 91, 255, 0.25); }
+        }
+
+        /* Motion Video Background - Fullscreen */
+        .hero-video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.35;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(1.2) contrast(1.1);
+        }
+
+        /* Logo Link */
+        .logo-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 90px;
+            width: auto;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: brightness(1);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+
+        /* Footer Logo */
+        .footer-logo {
+            height: 150px;
+            width: auto;
+            margin-bottom: 2rem;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .footer-logo:hover {
+            transform: scale(1.05) rotate(2deg);
+            filter: drop-shadow(0 0 30px rgba(46, 91, 255, 0.2));
+        }
+
+        /* Section Logo Accents - Large Watermarks */
+        .section-logo-accent {
+            position: absolute;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .section-logo-accent img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .section-logo-accent.top-right {
+            top: -15%;
+            right: -20%;
+            width: 900px;
+            height: 900px;
+            transform: rotate(15deg);
+        }
+
+        .section-logo-accent.bottom-left {
+            bottom: -20%;
+            left: -25%;
+            width: 800px;
+            height: 800px;
+            transform: rotate(-20deg);
+        }
+
+        .section-logo-accent.center-bg {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1000px;
+            height: 1000px;
+            opacity: 0.035;
+        }
+
+        .section-logo-accent.small {
+            width: 500px;
+            height: 500px;
+            top: -10%;
+            right: -15%;
+        }
+
+        /* Section relative positioning for logo accents */
+        .about,
+        .services,
+        .directors,
+        .contact {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Scroll Indicator for Hero */
+        .scroll-indicator {
+            text-align: center;
+            animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards 1s;
+            opacity: 0;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 0.75rem;
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            margin: 0 auto;
+            animation: smoothBounce 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        .scroll-arrow svg {
+            width: 100%;
+            height: 100%;
+            color: var(--electric-cobalt);
+            filter: drop-shadow(0 0 10px rgba(46, 91, 255, 0.5));
+        }
+
+        @keyframes smoothBounce {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(12px); opacity: 0.6; }
+        }
+
+        .scroll-arrow {
+            width: 30px;
+            height: 30px;
+            margin: 0 auto;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-arrow svg {
+            width: 100%;
+            height: 100%;
+            color: var(--electric-cobalt);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(10px); }
+            60% { transform: translateY(5px); }
+        }
+
+        /* About Hero Section - Split Layout */
+        .about-hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 0 6rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-hero-text {
+            flex: 1;
+            text-align: left;
+            max-width: 600px;
+        }
+
+        .about-hero-text .hero-badge {
+            margin-bottom: 1.5rem;
+        }
+
+        .about-hero-text .hero-title {
+            opacity: 1;
+            animation: none;
+            text-align: left;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+        }
+
+        .about-hero-text .hero-subtitle {
+            opacity: 1;
+            animation: none;
+            text-align: left;
+            margin: 0;
+            max-width: 500px;
+        }
+
+        .about-hero-text .hero-subtitle-secondary {
+            opacity: 0.7;
+            text-align: left;
+            margin: 1rem 0 0;
+            max-width: 500px;
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--muted-white);
+            animation: fadeInUp 1s ease forwards 0.8s;
+        }
+
+        .about-hero-logo {
+            flex-shrink: 0;
+            width: 400px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-hero-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Scroll Animation for Logo */
+        .scroll-animate-logo {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-animate-logo.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 968px) {
+            .about-hero-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 3rem;
+            }
+
+            .about-hero-text {
+                text-align: center;
+                max-width: 100%;
+            }
+
+            .about-hero-text .hero-title,
+            .about-hero-text .hero-subtitle {
+                text-align: center;
+                max-width: 100%;
+            }
+
+            .about-hero-logo {
+                width: 280px;
+                height: 280px;
+            }
+        }
+
+        /* Marquee Container for About Cards */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .marquee-container::before,
+        .marquee-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 150px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .marquee-container::before {
+            left: 0;
+            background: linear-gradient(90deg, var(--charcoal), transparent);
+        }
+
+        .marquee-container::after {
+            right: 0;
+            background: linear-gradient(-90deg, var(--charcoal), transparent);
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 2rem;
+            animation: marquee 35s linear infinite;
+            width: max-content;
+            will-change: transform;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee-track .about-card {
+            flex-shrink: 0;
+            width: 380px;
+            margin: 0;
+        }
+
+        /* Brands Section - Marquee */
+        .brands {
+            background: var(--deep-charcoal);
+            padding: 60px 0;
+            overflow: hidden;
+        }
+
+        .brands-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted-white);
+            text-align: left;
+            margin-bottom: 3rem;
+            margin-left: 5%;
+        }
+
+        .brands-marquee {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .brands-marquee::before,
+        .brands-marquee::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .brands-marquee::before {
+            left: 0;
+            background: linear-gradient(90deg, var(--deep-charcoal), transparent);
+        }
+
+        .brands-marquee::after {
+            right: 0;
+            background: linear-gradient(-90deg, var(--deep-charcoal), transparent);
+        }
+
+        .brands-track {
+            display: flex;
+            gap: 4rem;
+            animation: brandsMarquee 20s linear infinite;
+            width: max-content;
+            align-items: center;
+            will-change: transform;
+        }
+
+        @keyframes brandsMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .brand-logo-item {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            min-width: 120px;
+        }
+
+        .brand-logo-item img {
+            max-height: 45px;
+            max-width: 120px;
+            object-fit: contain;
+            filter: grayscale(100%) brightness(2);
+            opacity: 0.7;
+            transition: all 0.4s ease;
+        }
+
+        .brand-logo-item:hover img {
+            filter: grayscale(0%) brightness(1);
+            opacity: 1;
+        }
+
+        .brand-fallback {
+            display: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--light-charcoal);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-logo-item:hover .brand-fallback {
+            color: var(--electric-cobalt);
+        }
+
+        /* Directors Marquee */
+        .directors-marquee {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .directors-marquee::before,
+        .directors-marquee::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 150px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .directors-marquee::before {
+            left: 0;
+            background: linear-gradient(90deg, var(--charcoal), transparent);
+        }
+
+        .directors-marquee::after {
+            right: 0;
+            background: linear-gradient(-90deg, var(--charcoal), transparent);
+        }
+
+        .directors-track {
+            display: flex;
+            gap: 2rem;
+            animation: directorsMarquee 45s linear infinite;
+            width: max-content;
+            will-change: transform;
+        }
+
+        @keyframes directorsMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .directors-track .director-card {
+            flex-shrink: 0;
+            width: 320px;
+        }
+
+        .directors-track .director-card-featured {
+            width: 550px;
+            grid-template-columns: 220px 1fr;
+        }
+
+        @media (max-width: 768px) {
+            .directors-marquee::before,
+            .directors-marquee::after {
+                width: 50px;
+            }
+
+            .directors-track .director-card {
+                width: 280px;
+            }
+
+            .directors-track .director-card-featured {
+                width: 280px;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced Director Card for Vibhu */
+        .director-card-featured {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 0;
+        }
+
+        .director-card-featured .director-image {
+            height: 100%;
+            min-height: 320px;
+        }
+
+        .director-card-featured .director-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .director-card-featured:hover .director-image img {
+            transform: scale(1.05);
+        }
+
+        .director-title {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--electric-cobalt);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .director-links-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .director-contact {
+            font-size: 0.8rem !important;
+            color: var(--light-charcoal) !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Standard director image with actual photos */
+        .director-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Director Initial Placeholder */
+        .director-initial {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--electric-cobalt);
+            opacity: 0.6;
+            letter-spacing: -0.05em;
+        }
+
+        .director-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .director-card-featured {
+                grid-column: span 1;
+                grid-template-columns: 1fr;
+            }
+
+            .director-card-featured .director-image {
+                min-height: 250px;
+            }
+
+            .hero-video-container {
+                width: 90vw;
+            }
+        }
+
+        /* Smoother Transitions */
+        * {
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Refined Glass Effect */
+        .about-card,
+        .service-card,
+        .director-card,
+        .contact-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .about-card:hover,
+        .service-card:hover,
+        .director-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(46, 91, 255, 0.2);
+        }
+
+        /* Cleaner Section Spacing */
+        section {
+            padding: 100px 5%;
+        }
+
+        .section-header {
+            margin-bottom: 5rem;
+        }
+
+        /* Subtle Hover States */
+        .btn {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 20px 50px rgba(46, 91, 255, 0.25);
+        }
+
+        /* Refined Typography */
+        .hero-subtitle {
+            font-weight: 300;
+            letter-spacing: 0.01em;
+        }
+
+        .section-subtitle {
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#directors">Directors</a></li>
+                <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
+            </ul>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <!-- Motion Logo Video Background -->
+            <div class="hero-video-container">
+                <video autoplay muted loop playsinline class="hero-video">
+                    <source src="LOGO_MGFX_V001.mp4" type="video/mp4">
+                </video>
+            </div>
+            
+            <!-- Subtle Particles -->
+            <div class="particles">
+                <div class="particle" style="left: 15%; animation-delay: 0s;"></div>
+                <div class="particle" style="left: 35%; animation-delay: 3s;"></div>
+                <div class="particle" style="left: 55%; animation-delay: 1s;"></div>
+                <div class="particle" style="left: 75%; animation-delay: 4s;"></div>
+                <div class="particle" style="left: 90%; animation-delay: 2s;"></div>
+            </div>
+        </div>
+
+        <div class="hero-content">
+            <div class="scroll-indicator">
+                <span>Scroll to explore</span>
+                <div class="scroll-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12l7 7 7-7"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="section-logo-accent top-right">
+            <img src="20D5597A.png" alt="">
+        </div>
+        
+        <!-- Hero Content with Logo Animation -->
+        <div class="about-hero-container">
+            <div class="about-hero-text reveal-left">
+                <span class="hero-badge">Production House</span>
+                <h1 class="hero-title">
+                    <span class="kinetic">Where</span> <span class="kinetic highlight">Art</span> 
+                    <span class="kinetic">Echoes</span><br>
+                    <span class="kinetic">Beyond</span> <span class="kinetic">Boundaries</span>
+                </h1>
+                <p class="hero-subtitle">
+                    An umbrella company encompassing all things art. If you believe in yourself, we will chart a way ahead for you.
+                </p>
+                <p class="hero-subtitle-secondary">
+                    Whether you are a writer, director, producer, brand, influencer, or artist — we have solutions curated to your needs.
+                </p>
+            </div>
+            <div class="about-hero-logo scroll-animate-logo reveal-right">
+                <img src="20D5597A.png" alt="Spherecho">
+            </div>
+        </div>
+
+        <!-- Marquee Scrolling Cards -->
+        <div class="marquee-container">
+            <div class="marquee-track">
+                <div class="about-card">
+                    <div class="about-icon">◉</div>
+                    <h3>Our Vision</h3>
+                    <p>Spherecho is a noun crafted from the combination of Sphere + Echo. It signifies continuous growth through a spherical movement with its echo spreading across boundaries and covering 360 degree opportunities.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">∞</div>
+                    <h3>Our Values</h3>
+                    <p>Like atmosphere around us — boundaryless, we value art above chart. Whoever you are, wherever you are from, we want to create the future of art together.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">✦</div>
+                    <h3>The Dream</h3>
+                    <p>Whether you are an artist, a company, or an individual — you have a story to tell. Our ultimate goal? Promote art, create a transparent marketplace where the only measure of success is your craft.</p>
+                </div>
+                <!-- Duplicates for seamless loop -->
+                <div class="about-card">
+                    <div class="about-icon">◉</div>
+                    <h3>Our Vision</h3>
+                    <p>Spherecho is a noun crafted from the combination of Sphere + Echo. It signifies continuous growth through a spherical movement with its echo spreading across boundaries and covering 360 degree opportunities.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">∞</div>
+                    <h3>Our Values</h3>
+                    <p>Like atmosphere around us — boundaryless, we value art above chart. Whoever you are, wherever you are from, we want to create the future of art together.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon">✦</div>
+                    <h3>The Dream</h3>
+                    <p>Whether you are an artist, a company, or an individual — you have a story to tell. Our ultimate goal? Promote art, create a transparent marketplace where the only measure of success is your craft.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="section-logo-accent bottom-left">
+            <img src="20D5597A.png" alt="">
+        </div>
+        <div class="section-header reveal-left">
+            <span class="section-label">What We Do</span>
+            <h2 class="section-title">The Sphere of Spherecho</h2>
+            <p class="section-subtitle">
+                Comprehensive solutions for every creative need.
+            </p>
+        </div>
+
+        <div class="services-grid">
+            <div class="service-card reveal">
+                <div class="service-icon">🎬</div>
+                <h3>Production House</h3>
+                <p>End-to-end or customized packages of writers, directors, producers and actors for your creative vision.</p>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">📺</div>
+                <h3>Ad Filmmaking</h3>
+                <p>Brands and Ads — a match made in heaven. And we are the matchmakers bringing your brand story to life.</p>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">📢</div>
+                <h3>PR & Promotion</h3>
+                <p>We can't scream from the top of the hills. But we sure can create a noise in the air that resonates.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Directors Section -->
+    <section class="directors" id="directors">
+        <div class="section-logo-accent center-bg">
+            <img src="20D5597A.png" alt="">
+        </div>
+        <div class="section-header reveal-left">
+            <span class="section-label">Meet Our Team</span>
+            <h2 class="section-title">Ad Directors</h2>
+            <p class="section-subtitle">
+                Having directed 50+ ads for brands across industries, our directors are multi-faceted with innovative treatment and creative narrative.
+            </p>
+        </div>
+
+        <!-- Directors Marquee -->
+        <div class="directors-marquee">
+            <div class="directors-track">
+            <div class="director-card">
+                <div class="director-image"><span class="director-initial">M</span></div>
+                <div class="director-info">
+                    <h3>Madhav Raj Saraogi</h3>
+                    <p>Directed ads for PC Jewellers, IPL Berger Paints, Red Bus with Dhoni, Kellogs Choco Fills, GMR Corporate Film. BTS with Ranveer Singh & Aditi Rao Hydari.</p>
+                    <a href="https://vimeo.com/madhavrajsaraogi" target="_blank" class="director-link">
+                        View Showreel
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="director-card">
+                <div class="director-image"><span class="director-initial">P</span></div>
+                <div class="director-info">
+                    <h3>Prakash Ganderi</h3>
+                    <p>Directed ad films for Vistara, Mitsubishi, Bosch, IDFC, Pradhan Mantri Fasal Beema Yojana, Max Bupa, Haldiram's and Jiva Ayurveda.</p>
+                    <a href="https://vimeo.com/showcase/9096886" target="_blank" class="director-link">
+                        View Showreel
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="director-card director-card-featured">
+                <div class="director-image">
+                    <img src="PHOTO-2026-01-14-16-46-25.jpg" alt="Vibhu Kashyap">
+                </div>
+                <div class="director-info">
+                    <h3>Vibhu Kashyap</h3>
+                    <span class="director-title">Film Director & Writer</span>
+                    <p>20+ years in filmmaking. Directed "Tatlubaaz" (EpicOn), "Grey Stories" anthology, Sr. Creative Director for "Asur" (IMDB 8.5). Worked with Manoj Bajpayee, Arshad Warsi, Nargis Fakhri. Assistant Director on multiple National Award films.</p>
+                    <div class="director-links-grid">
+                        <a href="https://www.youtube.com/watch?v=gsbrmNDCm1w" target="_blank" class="director-link">
+                            Tatlubaaz
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=LDirQBvwx7g" target="_blank" class="director-link">
+                            Asur
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="director-contact">vibhukashyap@gmail.com</p>
+                </div>
+            </div>
+
+            <div class="director-card">
+                <div class="director-image"><span class="director-initial">R</span></div>
+                <div class="director-info">
+                    <h3>Rahil Nadiadwala</h3>
+                    <p>Assistant Director of Ae Dil Hai Mushkil, Humpty Sharma Ki Dulhaniya. Directed John Abraham for Reliance Trends — North East United FC.</p>
+                    <a href="https://youtu.be/IKE5NYIFBVQ" target="_blank" class="director-link">
+                        View Showreel
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <!-- Duplicates for seamless loop -->
+            <div class="director-card">
+                <div class="director-image"><span class="director-initial">M</span></div>
+                <div class="director-info">
+                    <h3>Madhav Raj Saraogi</h3>
+                    <p>Directed ads for PC Jewellers, IPL Berger Paints, Red Bus with Dhoni, Kellogs Choco Fills, GMR Corporate Film.</p>
+                    <a href="https://vimeo.com/madhavrajsaraogi" target="_blank" class="director-link">
+                        View Showreel
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="director-card">
+                <div class="director-image"><span class="director-initial">P</span></div>
+                <div class="director-info">
+                    <h3>Prakash Ganderi</h3>
+                    <p>Directed ad films for Vistara, Mitsubishi, Bosch, IDFC, Max Bupa, Haldiram's and Jiva Ayurveda.</p>
+                    <a href="https://vimeo.com/showcase/9096886" target="_blank" class="director-link">
+                        View Showreel
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="director-card director-card-featured">
+                <div class="director-image">
+                    <img src="PHOTO-2026-01-14-16-46-25.jpg" alt="Vibhu Kashyap">
+                </div>
+                <div class="director-info">
+                    <h3>Vibhu Kashyap</h3>
+                    <span class="director-title">Film Director & Writer</span>
+                    <p>20+ years in filmmaking. Directed "Tatlubaaz", "Grey Stories", Sr. Creative Director for "Asur" (IMDB 8.5).</p>
+                    <div class="director-links-grid">
+                        <a href="https://www.youtube.com/watch?v=gsbrmNDCm1w" target="_blank" class="director-link">Tatlubaaz</a>
+                        <a href="https://www.youtube.com/watch?v=LDirQBvwx7g" target="_blank" class="director-link">Asur</a>
+                    </div>
+                </div>
+            </div>
+            <div class="director-card">
+                <div class="director-image"><span class="director-initial">R</span></div>
+                <div class="director-info">
+                    <h3>Rahil Nadiadwala</h3>
+                    <p>Assistant Director of Ae Dil Hai Mushkil, Humpty Sharma Ki Dulhaniya. Directed John Abraham for Reliance Trends.</p>
+                    <a href="https://youtu.be/IKE5NYIFBVQ" target="_blank" class="director-link">
+                        View Showreel
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brands Section -->
+    <section class="brands">
+        <h3 class="brands-title reveal-left">Trusted By Leading Brands</h3>
+        <div class="brands-marquee">
+            <div class="brands-track">
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/bosch.com" alt="Bosch" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">BOSCH</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/raymond.in" alt="Raymond" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">RAYMOND</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/airvistara.com" alt="Vistara" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">VISTARA</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/unilever.com" alt="Unilever" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">UNILEVER</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/mahindra.com" alt="Mahindra" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">MAHINDRA</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/kotak.com" alt="Kotak" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">KOTAK</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/icicibank.com" alt="ICICI" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">ICICI</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/voltas.com" alt="Voltas" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">VOLTAS</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/haldirams.com" alt="Haldirams" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">HALDIRAM'S</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/adani.com" alt="Adani" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">ADANI</span>
+                </div>
+                <!-- Duplicates for seamless loop -->
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/bosch.com" alt="Bosch" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">BOSCH</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/raymond.in" alt="Raymond" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">RAYMOND</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/airvistara.com" alt="Vistara" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">VISTARA</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/unilever.com" alt="Unilever" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">UNILEVER</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/mahindra.com" alt="Mahindra" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">MAHINDRA</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/kotak.com" alt="Kotak" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">KOTAK</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/icicibank.com" alt="ICICI" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">ICICI</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/voltas.com" alt="Voltas" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">VOLTAS</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/haldirams.com" alt="Haldirams" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">HALDIRAM'S</span>
+                </div>
+                <div class="brand-logo-item">
+                    <img src="https://logo.clearbit.com/adani.com" alt="Adani" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <span class="brand-fallback">ADANI</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="section-logo-accent center-bg">
+            <img src="20D5597A.png" alt="">
+        </div>
+        <div class="contact-content reveal-scale">
+            <div class="contact-card">
+                <h2>Let's Create Together</h2>
+                <p>Ready to bring your story to life? We're here to help you every step of the way.</p>
+                <div class="contact-links">
+                    <a href="https://spherechoproductions.com" target="_blank" class="contact-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                        spherechoproductions.com
+                    </a>
+                    <a href="mailto:hello@spherechoproductions.com" class="contact-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                            <path d="M22 6l-10 7L2 6"/>
+                        </svg>
+                        Get In Touch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <img src="20D5597A.png" alt="Spherecho" class="footer-logo">
+                    <p>Spherecho Productions Pvt. Ltd. — An umbrella company encompassing all things art. Creating the future of art together.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#directors">Directors</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#services">Production House</a></li>
+                        <li><a href="#services">Ad Filmmaking</a></li>
+                        <li><a href="#services">PR & Promotion</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Spherecho Productions Pvt. Ltd. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Instagram">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="5"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <circle cx="18" cy="6" r="1.5" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="LinkedIn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="2"/>
+                            <path d="M8 11v5M8 8v.01M12 16v-5c0-1 1-2 2-2s2 1 2 2v5"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="YouTube">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="4"/>
+                            <path d="M10 9l5 3-5 3V9z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenu.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Navbar hide/show on scroll
+        let lastScrollTop = 0;
+        let scrollThreshold = 100;
+        
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            const currentScroll = window.scrollY;
+            
+            // Add scrolled class for styling
+            if (currentScroll > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            
+            // Hide/show navbar based on scroll direction
+            if (currentScroll > scrollThreshold) {
+                if (currentScroll > lastScrollTop) {
+                    // Scrolling down
+                    nav.classList.add('nav-hidden');
+                } else {
+                    // Scrolling up
+                    nav.classList.remove('nav-hidden');
+                }
+            } else {
+                nav.classList.remove('nav-hidden');
+            }
+            
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        });
+
+        // Kinetic text effect on scroll
+        const kineticElements = document.querySelectorAll('.kinetic');
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+            const scrollDelta = window.scrollY - lastScrollY;
+            kineticElements.forEach((el, index) => {
+                const offset = scrollDelta * 0.1 * (index % 2 === 0 ? 1 : -1);
+                el.style.transform = `translateY(${offset}px)`;
+            });
+            
+            setTimeout(() => {
+                kineticElements.forEach(el => {
+                    el.style.transform = 'translateY(0)';
+                });
+            }, 150);
+            
+            lastScrollY = window.scrollY;
+        });
+
+        // Enhanced Scroll Animation with bi-directional reveals
+        const allRevealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+        let lastScrollPosition = window.scrollY;
+        let animationTicking = false;
+        
+        const handleScrollAnimations = () => {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const scrollingDown = scrollY > lastScrollPosition;
+            
+            allRevealElements.forEach((el) => {
+                const rect = el.getBoundingClientRect();
+                const elementTop = rect.top;
+                const elementBottom = rect.bottom;
+                const revealPoint = windowHeight * 0.88;
+                const exitPoint = windowHeight * 0.15; // When to start exit animation
+                
+                // Element is in the sweet spot - fully visible
+                if (elementTop < revealPoint && elementTop > exitPoint) {
+                    el.classList.add('active');
+                    el.classList.remove('out');
+                }
+                // Element is leaving the top of viewport (scrolling down)
+                else if (elementTop < exitPoint && elementTop > -rect.height) {
+                    // Start exit animation
+                    el.classList.remove('active');
+                    el.classList.add('out');
+                }
+                // Element has completely left the top
+                else if (elementBottom < 0) {
+                    el.classList.remove('active');
+                    el.classList.add('out');
+                }
+                // Element is below viewport - reset for re-entry
+                else if (elementTop > windowHeight) {
+                    el.classList.remove('active', 'out');
+                }
+            });
+            
+            lastScrollPosition = scrollY;
+            animationTicking = false;
+        };
+
+        const onScrollAnimate = () => {
+            if (!animationTicking) {
+                requestAnimationFrame(handleScrollAnimations);
+                animationTicking = true;
+            }
+        };
+
+        window.addEventListener('scroll', onScrollAnimate, { passive: true });
+        handleScrollAnimations(); // Initial check
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect for video
+        window.addEventListener('scroll', () => {
+            const videoContainer = document.querySelector('.hero-video-container');
+            const scrolled = window.scrollY;
+            if (videoContainer && scrolled < window.innerHeight) {
+                videoContainer.style.opacity = Math.max(0.05, 0.35 - (scrolled * 0.0003));
+            }
+        });
+
+        // Logo scroll animation in about section
+        const scrollAnimateLogo = document.querySelector('.scroll-animate-logo');
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const logoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        if (scrollAnimateLogo) {
+            logoObserver.observe(scrollAnimateLogo);
+        }
+
+        // Ensure video plays
+        const heroVideo = document.querySelector('.hero-video');
+        if (heroVideo) {
+            heroVideo.play().catch(e => console.log('Video autoplay prevented'));
+        }
+    </script>
+</body>
+</html>
