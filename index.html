@@ -815,6 +815,167 @@
             box-shadow: 0 10px 30px rgba(46, 91, 255, 0.3);
         }
 
+        /* Founders Section */
+        .founders {
+            background: linear-gradient(180deg, var(--charcoal) 0%, var(--deep-charcoal) 100%);
+        }
+
+        .founders-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .founder-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .founder-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(46, 91, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .founder-image {
+            height: 280px;
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--medium-charcoal) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .founder-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .founder-card:hover .founder-image img {
+            transform: scale(1.05);
+        }
+
+        .founder-initial {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--electric-cobalt);
+            opacity: 0.5;
+        }
+
+        .founder-info {
+            padding: 2rem;
+        }
+
+        .founder-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .founder-title {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--electric-cobalt);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .founder-info p {
+            color: var(--muted-white);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .founders-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Upcoming Projects Section */
+        .upcoming-projects {
+            background: linear-gradient(180deg, var(--deep-charcoal) 0%, #0a0a0a 100%);
+            padding: 100px 5%;
+            text-align: center;
+        }
+
+        .upcoming-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .upcoming-title {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 600;
+            color: var(--muted-white);
+            margin-bottom: 3rem;
+        }
+
+        .upcoming-hero {
+            padding: 4rem 2rem;
+            background: rgba(46, 91, 255, 0.05);
+            border: 1px solid rgba(46, 91, 255, 0.2);
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upcoming-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(46, 91, 255, 0.1) 0%, transparent 60%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .project-name {
+            font-size: clamp(4rem, 12vw, 10rem);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--off-white) 0%, var(--electric-cobalt) 50%, var(--off-white) 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .project-tagline {
+            font-size: 1.2rem;
+            color: var(--muted-white);
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
         /* Footer */
         footer {
             background: var(--deep-charcoal);
@@ -1840,6 +2001,40 @@
         </div>
     </section>
 
+    <!-- Founders Section -->
+    <section class="founders" id="founders">
+        <div class="section-header reveal-left">
+            <span class="section-label">Leadership</span>
+            <h2 class="section-title">Our Founders</h2>
+            <p class="section-subtitle">
+                Visionary leaders driving the future of art and storytelling.
+            </p>
+        </div>
+
+        <div class="founders-grid">
+            <div class="founder-card reveal">
+                <div class="founder-image">
+                    <span class="founder-initial">N</span>
+                </div>
+                <div class="founder-info">
+                    <h3>Niranjan Das</h3>
+                    <span class="founder-title">Director</span>
+                    <p>With over 40 years of experience in leadership roles across the coal and environmental sectors, Niranjan Das brings a unique blend of strategic vision and creative passion to his role as a producer. A former Director at Coal India Ltd and Advisor to the Chhattisgarh State Electricity Board, he has honed his expertise in team management, business planning, and sustainable practices. Now, as Director at Spherecho Productions, Niranjan leverages his diverse background to produce impactful stories that inspire meaningful cultural change.</p>
+                </div>
+            </div>
+            <div class="founder-card reveal">
+                <div class="founder-image">
+                    <img src="AAD7D405-FDD6-4A0F-ABCA-42E4B6072AD9.JPG" alt="Ranaksh Rana">
+                </div>
+                <div class="founder-info">
+                    <h3>Ranaksh Rana</h3>
+                    <span class="founder-title">Director & Co-founder</span>
+                    <p>Ranaksh Rana is a banker-turned-producer with the soul of an artist, deeply committed to promoting Indian art and culture. "Dial 1975" marks his debut feature film. As the Director and Co-founder of Spherecho Productions Pvt. Ltd., he believes that stories lie in every corner of India, and that cinema is a powerful medium to inspire, entertain, and effect change. Beyond filmmaking, Ranaksh is the creator of Voice of Artist—a platform by artists, for artists—dedicated to nurturing creative energy and realising the vision of Vasudhaiva Kutumbakam through art. He is also a theatre artist-turned-actor.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Services Section -->
     <section class="services" id="services">
         <div class="section-logo-accent bottom-left">
@@ -1905,17 +2100,20 @@
                 </div>
             </div>
 
-            <div class="director-card">
-                <div class="director-image"><span class="director-initial">P</span></div>
+            <div class="director-card director-card-featured">
+                <div class="director-image">
+                    <img src="TAB-128.jpg" alt="Taher Ali Baig">
+                </div>
                 <div class="director-info">
-                    <h3>Prakash Ganderi</h3>
-                    <p>Directed ad films for Vistara, Mitsubishi, Bosch, IDFC, Pradhan Mantri Fasal Beema Yojana, Max Bupa, Haldiram's and Jiva Ayurveda.</p>
-                    <a href="https://vimeo.com/showcase/9096886" target="_blank" class="director-link">
-                        View Showreel
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
+                    <h3>Taher Ali Baig</h3>
+                    <span class="director-title">Theatre Director, Playwright & Filmmaker</span>
+                    <p>South India's Theatre Powerhouse dubbed the "Hitman of Plays." Productions include Blithe Spirit, Ali Baba 40 Chor, Matilda, SuperLosers, and more. Award-winning filmmaker (Fitrat - 40 Awards). Ad filmmaker for Kiana Skincare, Volvo Cars. Champion of children's theatre and mentor for aspiring artists.</p>
+                    <div class="director-links-grid">
+                        <a href="https://en.wikipedia.org/wiki/Taher_Ali_Baig" target="_blank" class="director-link">Wikipedia</a>
+                        <a href="https://www.instagram.com/taheralibaig/" target="_blank" class="director-link">Instagram</a>
+                        <a href="https://www.facebook.com/taheralibaigofficial" target="_blank" class="director-link">Facebook</a>
+                    </div>
+                    <p class="director-contact">taheralibaig@gmail.com</p>
                 </div>
             </div>
 
@@ -1978,17 +2176,18 @@
                     </a>
                 </div>
             </div>
-            <div class="director-card">
-                <div class="director-image"><span class="director-initial">P</span></div>
+            <div class="director-card director-card-featured">
+                <div class="director-image">
+                    <img src="TAB-128.jpg" alt="Taher Ali Baig">
+                </div>
                 <div class="director-info">
-                    <h3>Prakash Ganderi</h3>
-                    <p>Directed ad films for Vistara, Mitsubishi, Bosch, IDFC, Max Bupa, Haldiram's and Jiva Ayurveda.</p>
-                    <a href="https://vimeo.com/showcase/9096886" target="_blank" class="director-link">
-                        View Showreel
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
+                    <h3>Taher Ali Baig</h3>
+                    <span class="director-title">Theatre Director & Filmmaker</span>
+                    <p>South India's Theatre Powerhouse. Award-winning filmmaker (Fitrat). Ad filmmaker for Kiana Skincare, Volvo Cars. Champion of children's theatre.</p>
+                    <div class="director-links-grid">
+                        <a href="https://en.wikipedia.org/wiki/Taher_Ali_Baig" target="_blank" class="director-link">Wikipedia</a>
+                        <a href="https://www.instagram.com/taheralibaig/" target="_blank" class="director-link">Instagram</a>
+                    </div>
                 </div>
             </div>
             <div class="director-card director-card-featured">
@@ -2157,6 +2356,18 @@
                         </svg>
                     </a>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Projects Section -->
+    <section class="upcoming-projects">
+        <div class="upcoming-content reveal-scale">
+            <span class="section-label">Coming Soon</span>
+            <h2 class="upcoming-title">Upcoming Projects</h2>
+            <div class="upcoming-hero">
+                <h1 class="project-name">Dial 1975</h1>
+                <p class="project-tagline">A Spherecho Productions Feature Film</p>
             </div>
         </div>
     </section>
