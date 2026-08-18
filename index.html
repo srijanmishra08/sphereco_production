@@ -1509,8 +1509,18 @@
 
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
             gap: clamp(1rem, 1.8vw, 1.5rem);
+        }
+
+        /* Two founders, then the crew. Each row fills its own width evenly,
+           so changing the number of people never leaves a hole in the grid. */
+        .team-grid--leads {
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+        }
+
+        .team-grid--crew {
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+            margin-top: clamp(1rem, 1.8vw, 1.5rem);
         }
 
         .person {
@@ -1534,16 +1544,10 @@
             box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
         }
 
-        /* The two founders lead the grid at double width */
-        .person--lead { grid-column: span 2; }
-
         @media (min-width: 861px) {
             .person--lead { flex-direction: row; }
             .person--lead .person-media { width: 44%; flex-shrink: 0; aspect-ratio: auto; }
             .person--lead .person-body { padding: clamp(1.5rem, 2.4vw, 2.1rem); }}
-
-        @media (max-width: 860px) {
-            .person--lead { grid-column: span 1; }}
 
         .person-media {
             position: relative;
@@ -1980,6 +1984,74 @@
 
         .form-status[data-state="error"] { color: #FF8A8A; }
         .form-status[data-state="ok"] { color: var(--ink); }
+
+        /* Contact: form on the left, direct contact on the right --------- */
+        /* The card holds two columns now, so it needs more than the
+           600px the single-column version was capped at. */
+        .contact-content { max-width: 1100px; }
+
+        .contact-head { text-align: center; }
+
+        .contact-cols {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+            gap: clamp(1.75rem, 4vw, 3.25rem);
+            align-items: start;
+            text-align: left;
+            margin-top: clamp(2rem, 4vw, 2.75rem);
+        }
+
+        @media (max-width: 900px) {
+            .contact-cols { grid-template-columns: 1fr; }
+            .contact-aside { border-top: 1px solid var(--hairline); padding-top: 1.75rem; }
+        }
+
+        /* The form no longer sits below a divider — the column is the divider */
+        .pitch-form {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: 0;
+        }
+
+        .pitch-form-head { text-align: left; }
+        .pitch-form-head p { margin-inline: 0; }
+
+        .contact-aside { display: flex; flex-direction: column; }
+
+        .aside-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            margin-bottom: 0.6rem;
+        }
+
+        .aside-title + .aside-note { margin-bottom: 1rem; }
+
+        .aside-note {
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 1.55;
+            color: var(--ink-2);
+        }
+
+        .contact-aside .contact-links {
+            margin: 0 0 2.25rem;
+            justify-content: flex-start;
+        }
+
+        .contact-aside .contact-link {
+            width: 100%;
+            justify-content: flex-start;
+            word-break: break-word;
+        }
+
+        .contact-aside .contact-social {
+            margin: 0;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
 
         /* Terms link inside the consent label -------------------------- */
         .terms-link {
@@ -2462,7 +2534,7 @@
                 <p class="lede">Founders who backed the story, and the craftspeople who put it on screen.</p>
             </div>
 
-            <div class="team-grid">
+            <div class="team-grid team-grid--leads">
                 <!-- Founders -->
                 <article class="person person--lead fade-up">
                     <div class="person-media">
@@ -2490,6 +2562,9 @@
                     </div>
                 </article>
 
+            </div>
+
+            <div class="team-grid team-grid--crew">
                 <!-- Crew -->
                 <article class="person fade-up">
                     <div class="person-media">
@@ -2672,17 +2747,12 @@
         </div>
         <div class="contact-content reveal-scale">
             <div class="contact-card">
-                <h2>Let's Create Together</h2>
-                <p>Ready to bring your story to life? We're here to help you every step of the way.</p>
-                <div class="contact-links">
-                    <a href="mailto:partners@spherechoproductions.com" class="contact-link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="4" width="20" height="16" rx="2"/>
-                            <path d="M22 6l-10 7L2 6"/>
-                        </svg>
-                        partners@spherechoproductions.com
-                    </a>
+                <div class="contact-head">
+                    <h2>Let's Create Together</h2>
+                    <p>Ready to bring your story to life? We're here to help you every step of the way.</p>
                 </div>
+
+                <div class="contact-cols">
                 <form class="pitch-form" id="pitchForm" novalidate>
                     <div class="pitch-form-head">
                         <h3>Pitch us your story</h3>
@@ -2744,6 +2814,21 @@
                     <p class="form-status" id="pitchStatus" role="status" aria-live="polite"></p>
                 </form>
 
+                    <aside class="contact-aside">
+                        <h3 class="aside-title">Prefer email?</h3>
+                        <p class="aside-note">Write to us directly and we'll pick it up from there.</p>
+
+                        <div class="contact-links">
+                            <a href="mailto:partners@spherechoproductions.com" class="contact-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                    <path d="M22 6l-10 7L2 6"/>
+                                </svg>
+                                partners@spherechoproductions.com
+                            </a>
+                        </div>
+
+                        <h3 class="aside-title">Follow along</h3>
                 <div class="contact-social">
                     <a href="https://www.instagram.com/spherecho?igsh=MXB6Z2J1enhyOWh2eA==" target="_blank" aria-label="Instagram" class="social-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -2772,6 +2857,8 @@
                             <path d="M12.206.793c.99 0 4.347.276 5.93 3.821.529 1.193.403 3.219.299 4.847l-.003.06c-.012.18-.022.345-.03.51.075.045.203.09.401.09.3-.016.659-.12 1.033-.301.165-.088.344-.104.464-.104.182 0 .359.029.509.09.45.149.734.479.734.838.015.449-.39.839-1.213 1.168-.089.029-.209.075-.344.119-.45.135-1.139.36-1.333.81-.09.224-.061.524.12.868l.015.015c.06.136 1.526 3.475 4.791 4.014.255.044.435.27.42.509 0 .075-.015.149-.045.225-.24.569-1.273.988-3.146 1.271-.059.091-.12.375-.164.57-.029.179-.074.36-.134.553-.076.271-.27.405-.555.405h-.03c-.135 0-.313-.031-.538-.074-.36-.075-.765-.135-1.273-.135-.3 0-.599.015-.913.074-.6.104-1.123.464-1.723.884-.853.599-1.826 1.288-3.294 1.288-.06 0-.119-.015-.18-.015h-.149c-1.468 0-2.427-.675-3.279-1.288-.599-.42-1.107-.779-1.707-.884-.314-.045-.629-.074-.928-.074-.54 0-.958.089-1.272.149-.211.043-.391.074-.54.074-.374 0-.523-.224-.583-.42-.061-.192-.09-.389-.135-.567-.046-.181-.105-.494-.166-.57-1.918-.222-2.95-.642-3.189-1.226-.031-.063-.052-.15-.055-.225-.015-.243.165-.465.42-.509 3.264-.54 4.73-3.879 4.791-4.02l.016-.029c.18-.345.224-.645.119-.869-.195-.434-.884-.658-1.332-.809-.121-.029-.24-.074-.346-.119-.809-.329-1.224-.72-1.227-1.153-.015-.345.284-.675.734-.825.15-.061.329-.09.51-.09.119 0 .283.015.435.074.39.12.735.27 1.05.27.18 0 .359-.045.435-.061-.03-.18-.044-.375-.06-.57-.015-.209-.029-.419-.044-.629-.105-1.628-.239-3.654.27-4.836C7.87 1.07 11.216.793 12.206.793z"/>
                         </svg>
                     </a>
+                </div>
+                    </aside>
                 </div>
             </div>
         </div>
