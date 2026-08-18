@@ -254,56 +254,6 @@
             text-align: center;
         }
 
-        .hero-badge {
-            display: inline-block;
-            padding: 0.6rem 1.5rem;
-            background: rgba(46, 91, 255, 0.1);
-            border: 1px solid rgba(46, 91, 255, 0.2);
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 20px rgba(46, 91, 255, 0.15);
-        }
-
-        .hero-title {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900;
-            line-height: 1.05;
-            letter-spacing: -0.04em;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            animation: heroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.3s;
-        }
-
-        @keyframes heroFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.95);
-                filter: blur(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
-        }
-
-        .hero-title .kinetic {
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-
-        .hero-title .highlight {
-            background: linear-gradient(135deg, var(--electric-cobalt), #6B8AFF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -315,153 +265,15 @@
             }
         }
 
-        .hero-subtitle {
-            font-size: 1.25rem;
-            font-weight: 400;
-            color: var(--muted-white);
-            max-width: 600px;
-            margin: 0 auto 2.5rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.5s;
-        }
-
-        .hero-cta-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.7s;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: pointer;
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .btn:hover::before {
-            transform: translateX(100%);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--electric-cobalt), #4070ff);
-            color: var(--off-white);
-            box-shadow: 0 5px 20px rgba(46, 91, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 20px 50px rgba(46, 91, 255, 0.4), 0 0 30px rgba(46, 91, 255, 0.3);
-        }
-
-        .btn-secondary {
-            background: var(--glass-bg);
-            color: var(--off-white);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-        }
-
         /* Section Styles */
         section {
             padding: 120px 5%;
             position: relative;
         }
 
-        .section-header {
-            text-align: left;
-            max-width: 700px;
-            margin: 0 0 4rem;
-            padding: 0;
-        }
-
-        .section-label {
-            display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--electric-cobalt);
-            margin-bottom: 1rem;
-            padding: 0.5rem 1rem;
-            background: rgba(46, 91, 255, 0.1);
-            border-radius: 50px;
-            border: 1px solid rgba(46, 91, 255, 0.2);
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--off-white) 0%, rgba(255, 255, 255, 0.7) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-subtitle {
-            font-size: 1.1rem;
-            color: var(--muted-white);
-            line-height: 1.7;
-        }
-
         /* About Section */
         .about {
             background: linear-gradient(180deg, var(--deep-charcoal) 0%, var(--charcoal) 100%);
-        }
-
-        .about-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            padding: 2.5rem;
-            backdrop-filter: blur(20px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .about-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(46, 91, 255, 0.1), transparent);
-            transition: left 0.7s ease;
-        }
-
-        .about-card:hover::before {
-            left: 100%;
-        }
-
-        .about-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            border-color: rgba(46, 91, 255, 0.3);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(46, 91, 255, 0.1);
         }
             height: 3px;
             background: linear-gradient(90deg, var(--electric-cobalt), transparent);
@@ -472,40 +284,6 @@
         .about-card:hover {
             transform: translateY(-10px);
             border-color: var(--cobalt-glow);
-        }
-
-        .about-card:hover::before {
-            opacity: 1;
-        }
-
-        .about-card h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .about-card p {
-            color: var(--muted-white);
-            line-height: 1.8;
-        }
-
-        .about-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--electric-cobalt), #4070ff);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            box-shadow: 0 10px 30px rgba(46, 91, 255, 0.3);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .about-card:hover .about-icon {
-            transform: scale(1.1) rotate(-5deg);
-            box-shadow: 0 15px 40px rgba(46, 91, 255, 0.5);
         }
 
         /* Services Section */
@@ -519,175 +297,6 @@
             gap: 2rem;
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .service-card {
-            background: linear-gradient(145deg, rgba(45, 45, 45, 0.3), rgba(26, 26, 26, 0.3));
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 3rem 2rem;
-            text-align: center;
-            backdrop-filter: blur(20px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(46, 91, 255, 0.15), transparent 50%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .service-card:hover::before {
-            opacity: 1;
-        }
-
-        .service-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--electric-cobalt), transparent);
-            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .service-card:hover {
-            transform: translateY(-20px) scale(1.03);
-            border-color: rgba(46, 91, 255, 0.2);
-            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.4), 0 0 50px rgba(46, 91, 255, 0.1);
-        }
-
-        .service-card:hover::after {
-            width: 80%;
-        }
-
-        .service-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 2rem;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .service-card:hover .service-icon {
-            background: linear-gradient(135deg, var(--electric-cobalt), #4070ff);
-            transform: scale(1.15) rotate(10deg);
-            box-shadow: 0 10px 30px rgba(46, 91, 255, 0.4);
-        }
-
-        .service-card h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .service-card p {
-            color: var(--muted-white);
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-
-        /* Directors Section */
-        .directors {
-            background: linear-gradient(180deg, var(--charcoal) 0%, var(--deep-charcoal) 100%);
-        }
-
-        .director-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-
-        .director-card:hover {
-            transform: translateY(-12px) rotateX(2deg) scale(1.02);
-            border-color: rgba(46, 91, 255, 0.25);
-            box-shadow: 
-                0 30px 60px rgba(0, 0, 0, 0.4),
-                0 0 40px rgba(46, 91, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .director-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, var(--medium-charcoal), var(--charcoal));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: var(--electric-cobalt);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .director-image::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: linear-gradient(transparent, var(--glass-bg));
-        }
-
-        .director-info {
-            padding: 1.5rem;
-        }
-
-        .director-info h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-        }
-
-        .director-info p {
-            font-size: 0.85rem;
-            color: var(--muted-white);
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .director-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--electric-cobalt);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .director-link:hover {
-            gap: 0.75rem;
-        }
-
-        .director-link svg {
-            width: 16px;
-            height: 16px;
-            transition: transform 0.3s ease;
-        }
-
-        .director-link:hover svg {
-            transform: translateX(3px);
         }
 
         /* Contact Section */
@@ -815,166 +424,11 @@
             box-shadow: 0 10px 30px rgba(46, 91, 255, 0.3);
         }
 
-        /* Founders Section */
-        .founders {
-            background: linear-gradient(180deg, var(--charcoal) 0%, var(--deep-charcoal) 100%);
-        }
-
-        .founders-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 3rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .founder-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .founder-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(46, 91, 255, 0.3);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-        }
-
-        .founder-image {
-            height: 280px;
-            background: linear-gradient(135deg, var(--charcoal) 0%, var(--medium-charcoal) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .founder-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center 16%;
-            transition: transform 0.6s ease;
-        }
-
-        .founder-card:hover .founder-image img {
-            transform: scale(1.05);
-        }
-
-        .founder-initial {
-            font-size: 5rem;
-            font-weight: 800;
-            color: var(--electric-cobalt);
-            opacity: 0.5;
-        }
-
-        .founder-info {
-            padding: 2rem;
-        }
-
-        .founder-info h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .founder-title {
-            display: block;
-            font-size: 0.9rem;
-            color: var(--electric-cobalt);
-            font-weight: 500;
-            margin-bottom: 1rem;
-            letter-spacing: 0.05em;
-        }
-
-        .founder-info p {
-            color: var(--muted-white);
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-
-        @media (max-width: 768px) {
-            .founders-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         /* Upcoming Projects Section */
         .upcoming-projects {
             background: linear-gradient(180deg, var(--deep-charcoal) 0%, #0a0a0a 100%);
             padding: 100px 5%;
             text-align: center;
-        }
-
-        .upcoming-content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .upcoming-title {
-            font-size: clamp(1.5rem, 3vw, 2rem);
-            font-weight: 600;
-            color: var(--muted-white);
-            margin-bottom: 3rem;
-        }
-
-        .upcoming-hero {
-            padding: 4rem 2rem;
-            background: rgba(46, 91, 255, 0.05);
-            border: 1px solid rgba(46, 91, 255, 0.2);
-            border-radius: 32px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .upcoming-hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(46, 91, 255, 0.1) 0%, transparent 60%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        .project-name {
-            font-size: clamp(4rem, 12vw, 10rem);
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            line-height: 1;
-            background: linear-gradient(135deg, var(--off-white) 0%, var(--electric-cobalt) 50%, var(--off-white) 100%);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 3s ease-in-out infinite;
-            position: relative;
-            z-index: 1;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .project-tagline {
-            font-size: 1.2rem;
-            color: var(--muted-white);
-            font-weight: 400;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 1;
         }
 
         /* Footer */
@@ -1153,23 +607,13 @@
             .footer-bottom {
                 justify-content: center;
                 text-align: center;
-            }
-        }
+            }}
 
         @media (max-width: 480px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
 
             .contact-card {
                 padding: 2rem 1.5rem;
-            }
-
-            .marquee-container::before,
-            .marquee-container::after {
-                width: 50px;
-            }
-        }
+            }}
 
         /* Scroll Animations - Bi-directional Reveals */
         .reveal {
@@ -1260,12 +704,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Parallax sections */
-        .parallax-section {
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-
         /* Parallax Float Effect */
         @keyframes floatUp {
             0%, 100% { transform: translateY(0); }
@@ -1296,12 +734,6 @@
             height: 100%;
             object-fit: cover;
             filter: brightness(1.2) contrast(1.1);
-        }
-
-        /* Logo Link */
-        .logo-link {
-            display: flex;
-            align-items: center;
         }
 
         .logo {
@@ -1439,154 +871,6 @@
             60% { transform: translateY(5px); }
         }
 
-        /* About Hero Section - Split Layout */
-        .about-hero-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 4rem;
-            max-width: 1400px;
-            margin: 0 0 6rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .about-hero-text {
-            flex: 1;
-            text-align: left;
-            max-width: 600px;
-        }
-
-        .about-hero-text .hero-badge {
-            margin-bottom: 1.5rem;
-        }
-
-        .about-hero-text .hero-title {
-            opacity: 1;
-            animation: none;
-            text-align: left;
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-        }
-
-        .about-hero-text .hero-subtitle {
-            opacity: 1;
-            animation: none;
-            text-align: left;
-            margin: 0;
-            max-width: 500px;
-        }
-
-        .about-hero-text .hero-subtitle-secondary {
-            opacity: 0.7;
-            text-align: left;
-            margin: 1rem 0 0;
-            max-width: 500px;
-            font-size: 1rem;
-            line-height: 1.7;
-            color: var(--muted-white);
-            animation: fadeInUp 1s ease forwards 0.8s;
-        }
-
-        .about-hero-logo {
-            flex-shrink: 0;
-            width: 400px;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .about-hero-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Scroll Animation for Logo */
-        .scroll-animate-logo {
-            opacity: 0;
-            transform: translateY(100px);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .scroll-animate-logo.animate-in {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @media (max-width: 968px) {
-            .about-hero-container {
-                flex-direction: column;
-                text-align: center;
-                gap: 3rem;
-            }
-
-            .about-hero-text {
-                text-align: center;
-                max-width: 100%;
-            }
-
-            .about-hero-text .hero-title,
-            .about-hero-text .hero-subtitle {
-                text-align: center;
-                max-width: 100%;
-            }
-
-            .about-hero-logo {
-                width: 280px;
-                height: 280px;
-            }
-        }
-
-        /* Marquee Container for About Cards */
-        .marquee-container {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .marquee-container::before,
-        .marquee-container::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 150px;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .marquee-container::before {
-            left: 0;
-            background: linear-gradient(90deg, var(--charcoal), transparent);
-        }
-
-        .marquee-container::after {
-            right: 0;
-            background: linear-gradient(-90deg, var(--charcoal), transparent);
-        }
-
-        .marquee-track {
-            display: flex;
-            gap: 2rem;
-            animation: marquee 35s linear infinite;
-            width: max-content;
-            will-change: transform;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .marquee-track .about-card {
-            flex-shrink: 0;
-            width: 380px;
-            margin: 0;
-        }
-
         /* Brands Section - Marquee */
         .brands {
             background: var(--deep-charcoal);
@@ -1685,74 +969,6 @@
             color: var(--electric-cobalt);
         }
 
-        /* Directors Marquee */
-        .directors-marquee {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .directors-marquee::before,
-        .directors-marquee::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 150px;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .directors-marquee::before {
-            left: 0;
-            background: linear-gradient(90deg, var(--charcoal), transparent);
-        }
-
-        .directors-marquee::after {
-            right: 0;
-            background: linear-gradient(-90deg, var(--charcoal), transparent);
-        }
-
-        .directors-track {
-            display: flex;
-            gap: 2rem;
-            animation: directorsMarquee 45s linear infinite;
-            width: max-content;
-            will-change: transform;
-        }
-
-        @keyframes directorsMarquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .directors-track .director-card {
-            flex-shrink: 0;
-            width: 320px;
-        }
-
-        .directors-track .director-card-featured {
-            width: 550px;
-            grid-template-columns: 220px 1fr;
-        }
-
-        @media (max-width: 768px) {
-            .directors-marquee::before,
-            .directors-marquee::after {
-                width: 50px;
-            }
-
-            .directors-track .director-card {
-                width: 280px;
-            }
-
-            .directors-track .director-card-featured {
-                width: 280px;
-                grid-template-columns: 1fr;
-            }
-        }
-
         /* Enhanced Director Card for Vibhu */
         .director-card-featured {
             grid-column: span 2;
@@ -1761,80 +977,15 @@
             gap: 0;
         }
 
-        .director-card-featured .director-image {
-            height: 100%;
-            min-height: 320px;
-        }
-
-        .director-card-featured .director-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .director-card-featured:hover .director-image img {
-            transform: scale(1.05);
-        }
-
-        .director-title {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--electric-cobalt);
-            font-weight: 500;
-            margin-bottom: 1rem;
-            letter-spacing: 0.05em;
-        }
-
-        .director-links-grid {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-        }
-
-        .director-contact {
-            font-size: 0.8rem !important;
-            color: var(--light-charcoal) !important;
-            margin-bottom: 0 !important;
-        }
-
-        /* Standard director image with actual photos */
-        .director-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Director Initial Placeholder */
-        .director-initial {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--electric-cobalt);
-            opacity: 0.6;
-            letter-spacing: -0.05em;
-        }
-
-        .director-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         @media (max-width: 768px) {
             .director-card-featured {
                 grid-column: span 1;
                 grid-template-columns: 1fr;
             }
 
-            .director-card-featured .director-image {
-                min-height: 250px;
-            }
-
             .hero-video-container {
                 width: 90vw;
-            }
-        }
+            }}
 
         /* Smoother Transitions */
         * {
@@ -1850,41 +1001,959 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .about-card:hover,
-        .service-card:hover,
-        .director-card:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(46, 91, 255, 0.2);
-        }
-
         /* Cleaner Section Spacing */
         section {
             padding: 100px 5%;
         }
 
-        .section-header {
-            margin-bottom: 5rem;
+        /* ============================================================
+           SPHERECHO DESIGN SYSTEM v2 — Apple-inspired material + motion
+           Tokens, materials, type ramp, and the rebuilt sections.
+           Motion rules: transform/opacity only, size-specific tracking,
+           reduced-motion + reduced-transparency honoured throughout.
+           ============================================================ */
+
+        :root {
+            /* Surfaces */
+            --bg: #060607;
+            --bg-raised: #0C0C0E;
+            --ink: #F5F5F7;
+            --ink-2: rgba(245, 245, 247, 0.72);
+            --ink-3: rgba(245, 245, 247, 0.48);
+            --accent: #2E5BFF;
+            --accent-soft: rgba(46, 91, 255, 0.16);
+
+            /* Materials — heavier surfaces read thicker */
+            --mat-thin: rgba(255, 255, 255, 0.04);
+            --mat-regular: rgba(255, 255, 255, 0.06);
+            --mat-thick: rgba(255, 255, 255, 0.09);
+            --hairline: rgba(255, 255, 255, 0.10);
+            --hairline-strong: rgba(255, 255, 255, 0.16);
+
+            /* Radii */
+            --r-sm: 14px;
+            --r-md: 22px;
+            --r-lg: 32px;
+            --r-xl: 44px;
+
+            /* Motion — critically damped by default, bounce only after momentum */
+            --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-sharp: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-bounce: cubic-bezier(0.34, 1.32, 0.64, 1);
+            --dur-fast: 180ms;
+            --dur-base: 380ms;
+            --dur-slow: 620ms;
+
+            /* Rhythm */
+            --gutter: clamp(1.25rem, 5vw, 6rem);
+            --stack: clamp(5rem, 11vh, 9rem);
         }
 
-        /* Subtle Hover States */
-        .btn {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        body { background: var(--bg); }
+
+        /* Section rhythm ------------------------------------------------ */
+        section {
+            padding: var(--stack) var(--gutter);
+            position: relative;
         }
 
-        .btn-primary:hover {
-            box-shadow: 0 20px 50px rgba(46, 91, 255, 0.25);
+        .shell {
+            max-width: 1240px;
+            margin-inline: auto;
+            width: 100%;
         }
 
-        /* Refined Typography */
-        .hero-subtitle {
+        /* Type ramp — tracking is size-specific, never one value ---------- */
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            margin-bottom: 1.25rem;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 22px;
+            height: 1px;
+            background: var(--accent);
+            opacity: 0.85;
+        }
+
+        .display {
+            font-size: clamp(2.4rem, 6.2vw, 4.75rem);
+            line-height: 1.02;
+            letter-spacing: -0.035em;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .headline {
+            font-size: clamp(1.9rem, 4.2vw, 3.15rem);
+            line-height: 1.06;
+            letter-spacing: -0.028em;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .lede {
+            font-size: clamp(1.02rem, 1.5vw, 1.2rem);
+            line-height: 1.55;
+            letter-spacing: 0;
             font-weight: 300;
+            color: var(--ink-2);
+            max-width: 46ch;
+        }
+
+        .fine {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            letter-spacing: 0.005em;
+            color: var(--ink-3);
+        }
+
+        .grad-ink {
+            background: linear-gradient(180deg, #FFFFFF 10%, rgba(245,245,247,0.62) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ============================================================
+           2 — TRAILER STAGE
+           ============================================================ */
+        .trailer {
+            padding-top: clamp(3rem, 7vh, 5rem);
+        }
+
+        .trailer-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+        }
+
+        .trailer-head .headline { max-width: 16ch; }
+
+        .trailer-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .trailer-meta .fine { letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.76rem; }
+        .trailer-meta strong { color: var(--ink-2); font-weight: 500; letter-spacing: 0.01em; }
+
+        /* The big box */
+        .trailer-stage {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            background: #000;
+            border: 1px solid var(--hairline);
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                0 24px 70px rgba(0, 0, 0, 0.65),
+                0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+            transform: translateZ(0);
+            transition: transform var(--dur-slow) var(--ease-smooth),
+                        box-shadow var(--dur-slow) var(--ease-smooth);
+        }
+
+        .trailer-stage::after {
+            /* light catching the top edge of the material */
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: linear-gradient(180deg, rgba(255,255,255,0.09), transparent 22%);
+            z-index: 3;
+        }
+
+        .trailer-stage.is-live {
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                0 30px 90px rgba(0, 0, 0, 0.7),
+                0 0 90px -30px var(--accent-soft);
+        }
+
+        .trailer-stage iframe,
+        .trailer-stage .trailer-poster {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .trailer-poster {
+            object-fit: cover;
+            filter: saturate(1.05);
+            transform: scale(1.02);
+            transition: opacity var(--dur-slow) var(--ease-smooth);
+            z-index: 1;
+        }
+
+        .trailer-stage.is-live .trailer-poster { opacity: 0; }
+
+        .trailer-stage iframe {
+            z-index: 2;
+            opacity: 0;
+            /* The embed is a showcase surface, not a player — YouTube's own
+               chrome (title bar, hover controls) never appears. Playback is
+               driven entirely by the glass controls below. */
+            pointer-events: none;
+            transition: opacity var(--dur-slow) var(--ease-smooth);
+        }
+        .trailer-stage.is-live iframe { opacity: 1; }
+
+        /* Controls sit on a translucent layer over the film */
+        .trailer-controls {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: clamp(0.9rem, 2vw, 1.4rem);
+            background: linear-gradient(0deg, rgba(0,0,0,0.55), transparent);
+        }
+
+        .glass-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.6rem 1.05rem;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(20, 20, 22, 0.5);
+            backdrop-filter: blur(18px) saturate(180%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%);
+            color: #fff;
+            font: inherit;
+            font-size: 0.84rem;
+            font-weight: 500;
             letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: transform var(--dur-fast) var(--ease-sharp),
+                        background var(--dur-fast) var(--ease-sharp),
+                        border-color var(--dur-fast) var(--ease-sharp);
         }
 
-        .section-subtitle {
-            font-weight: 300;
+        .glass-btn:hover { background: rgba(40, 40, 44, 0.62); border-color: rgba(255,255,255,0.34); }
+        .glass-btn:active { transform: scale(0.97); }
+        .glass-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .glass-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        .btn-text-short { display: none; }
+
+        @media (max-width: 620px) {
+            .btn-text-full { display: none; }
+            .btn-text-short { display: inline; }
         }
-    </style>
+
+        .trailer-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.72);
+            padding-inline: 0.4rem;
+        }
+
+        .trailer-live .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+
+        /* Narrow screens: the controls wrap instead of clipping off the stage */
+        @media (max-width: 620px) {
+            .trailer-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .trailer-live { display: none; }
+
+            .trailer-controls > div {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+                width: 100%;
+            }
+
+            .glass-btn {
+                padding: 0.5rem 0.85rem;
+                font-size: 0.78rem;
+            }
+        }
+
+        /* Big centred play affordance, used when autoplay is blocked */
+        .trailer-play {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            display: grid;
+            place-items: center;
+            border: 0;
+            background: rgba(0,0,0,0.28);
+            cursor: pointer;
+            transition: opacity var(--dur-base) var(--ease-smooth);
+        }
+
+        .trailer-stage.is-live .trailer-play { opacity: 0; pointer-events: none; }
+
+        .trailer-play span {
+            width: clamp(64px, 8vw, 88px);
+            height: clamp(64px, 8vw, 88px);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(255,255,255,0.14);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.28);
+            transition: transform var(--dur-base) var(--ease-bounce);
+        }
+
+        .trailer-play:hover span { transform: scale(1.06); }
+        .trailer-play svg { width: 26px; height: 26px; fill: #fff; margin-left: 3px; }
+
+        /* ============================================================
+           3 — STORY (hero copy + vision/values/dream, one section)
+           ============================================================ */
+        .story { overflow: hidden; }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+            gap: clamp(2.5rem, 6vw, 5.5rem);
+            align-items: center;
+        }
+
+        .story-copy .display { margin-bottom: 1.5rem; }
+        .story-copy .display em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .story-copy p + p { margin-top: 0.95rem; }
+
+        .story-mark {
+            width: clamp(46px, 6vw, 62px);
+            height: auto;
+            opacity: 0.9;
+            margin-bottom: 1.75rem;
+            display: block;
+        }
+
+        /* Card stage — one card at a time, auto-advancing */
+        .story-stage {
+            position: relative;
+            border-radius: var(--r-lg);
+            padding: clamp(1.75rem, 3.4vw, 2.6rem);
+            background:
+                radial-gradient(120% 120% at 12% 0%, rgba(46,91,255,0.14), transparent 58%),
+                var(--mat-regular);
+            border: 1px solid var(--hairline);
+            backdrop-filter: blur(28px) saturate(170%);
+            -webkit-backdrop-filter: blur(28px) saturate(170%);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            min-height: clamp(300px, 40vh, 380px);
+            display: flex;
+            flex-direction: column;
+            touch-action: pan-y;
+            cursor: grab;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .story-stage:active { cursor: grabbing; }
+        .story-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+        .story-slides {
+            position: relative;
+            flex: 1;
+        }
+
+        .story-slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translate3d(0, 14px, 0) scale(0.985);
+            filter: blur(6px);
+            pointer-events: none;
+            transition: opacity var(--dur-base) var(--ease-smooth),
+                        transform var(--dur-base) var(--ease-smooth),
+                        filter var(--dur-base) var(--ease-smooth);
+        }
+
+        .story-slide.is-active {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1);
+            filter: blur(0);
+            pointer-events: auto;
+        }
+
+        .story-slide .slide-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+            color: var(--accent);
+            margin-bottom: 1.1rem;
+        }
+
+        .story-slide h3 {
+            font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 0.85rem;
+            color: var(--ink);
+        }
+
+        .story-slide p {
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 300;
+            color: var(--ink-2);
+        }
+
+        .story-slide p + p { margin-top: 0.7rem; }
+
+        /* Progress pills double as controls */
+        .story-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.75rem;
+        }
+
+        .story-dot {
+            flex: 1;
+            height: 3px;
+            border: 0;
+            padding: 0;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.14);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: background var(--dur-fast) var(--ease-sharp);
+        }
+
+        .story-dot:hover { background: rgba(255, 255, 255, 0.24); }
+        .story-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+        .story-dot::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left center;
+        }
+
+        .story-dot.is-active::after {
+            animation: storyFill var(--story-dwell, 6200ms) linear forwards;
+        }
+
+        .story-stage.is-paused .story-dot.is-active::after { animation-play-state: paused; }
+
+        @keyframes storyFill {
+            from { transform: scaleX(0); }
+            to   { transform: scaleX(1); }
+        }
+
+        .story-dot.is-seen::after { transform: scaleX(1); background: rgba(255,255,255,0.3); }
+
+        @media (max-width: 980px) {
+            .story-grid { grid-template-columns: 1fr; gap: 2.75rem; }
+            .story-stage { min-height: 320px; }}
+
+        /* ============================================================
+           4 — TEAM BEHIND DIAL 1975 (founders + crew, one section)
+           ============================================================ */
+        .team { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-raised) 50%, var(--bg) 100%); }
+
+        .team-head {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+            gap: clamp(1.5rem, 4vw, 4rem);
+            align-items: end;
+            margin-bottom: clamp(2.5rem, 5vw, 4rem);
+        }
+
+        @media (max-width: 860px) {
+            .team-head { grid-template-columns: 1fr; align-items: start; }}
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+            gap: clamp(1rem, 1.8vw, 1.5rem);
+        }
+
+        .person {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--r-md);
+            overflow: hidden;
+            background: var(--mat-thin);
+            border: 1px solid var(--hairline);
+            transition: transform var(--dur-base) var(--ease-smooth),
+                        background var(--dur-base) var(--ease-smooth),
+                        border-color var(--dur-base) var(--ease-smooth),
+                        box-shadow var(--dur-base) var(--ease-smooth);
+        }
+
+        .person:hover {
+            transform: translate3d(0, -4px, 0);
+            background: var(--mat-regular);
+            border-color: var(--hairline-strong);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        /* The two founders lead the grid at double width */
+        .person--lead { grid-column: span 2; }
+
+        @media (min-width: 861px) {
+            .person--lead { flex-direction: row; }
+            .person--lead .person-media { width: 44%; flex-shrink: 0; aspect-ratio: auto; }
+            .person--lead .person-body { padding: clamp(1.5rem, 2.4vw, 2.1rem); }}
+
+        @media (max-width: 860px) {
+            .person--lead { grid-column: span 1; }}
+
+        .person-media {
+            position: relative;
+            aspect-ratio: 4 / 5;
+            overflow: hidden;
+            background: #0F0F12;
+        }
+
+        .person-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: scale(1.01);
+            transition: transform var(--dur-slow) var(--ease-smooth), filter var(--dur-slow) var(--ease-smooth);
+            filter: saturate(0.92) contrast(1.02);
+        }
+
+        .person:hover .person-media img { transform: scale(1.045); filter: saturate(1) contrast(1.02); }
+
+        .person-media::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 45%, rgba(6,6,7,0.72) 100%);
+        }
+
+        .person-badge {
+            position: absolute;
+            top: 0.85rem;
+            left: 0.85rem;
+            z-index: 2;
+            font-size: 0.66rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.32rem 0.65rem;
+            border-radius: 100px;
+            color: #fff;
+            background: rgba(20, 20, 22, 0.55);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+        }
+
+        .person-badge--founder {
+            background: rgba(46, 91, 255, 0.32);
+            border-color: rgba(46, 91, 255, 0.5);
+        }
+
+        .person-body {
+            padding: 1.35rem 1.35rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .person-body h3 {
+            font-size: clamp(1.15rem, 1.7vw, 1.42rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            color: var(--ink);
+        }
+
+        .person-role {
+            display: block;
+            margin-top: 0.3rem;
+            margin-bottom: 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.045em;
+            color: var(--accent);
+        }
+
+        .person-body p {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            font-weight: 300;
+            color: var(--ink-2);
+        }
+
+        .person-body p + p { margin-top: 0.6rem; }
+
+        .person-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: auto;
+            padding-top: 1.1rem;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.42rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            text-decoration: none;
+            color: var(--ink-2);
+            background: var(--mat-regular);
+            border: 1px solid var(--hairline);
+            transition: transform var(--dur-fast) var(--ease-sharp),
+                        color var(--dur-fast) var(--ease-sharp),
+                        border-color var(--dur-fast) var(--ease-sharp),
+                        background var(--dur-fast) var(--ease-sharp);
+        }
+
+        .chip:hover {
+            color: #fff;
+            background: var(--accent-soft);
+            border-color: rgba(46, 91, 255, 0.45);
+        }
+
+        .chip:active { transform: scale(0.97); }
+        .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .chip svg { width: 12px; height: 12px; }
+
+        /* ============================================================
+           5 — SERVICES, BRANDS, CONTACT, UPCOMING (same language)
+           ============================================================ */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+            gap: clamp(1rem, 1.8vw, 1.5rem);
+        }
+
+        .tile {
+            position: relative;
+            padding: clamp(1.6rem, 2.6vw, 2.2rem);
+            border-radius: var(--r-md);
+            background: var(--mat-thin);
+            border: 1px solid var(--hairline);
+            overflow: hidden;
+            transition: transform var(--dur-base) var(--ease-smooth),
+                        background var(--dur-base) var(--ease-smooth),
+                        border-color var(--dur-base) var(--ease-smooth),
+                        box-shadow var(--dur-base) var(--ease-smooth);
+        }
+
+        .tile::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(90% 90% at 50% 0%, rgba(46,91,255,0.16), transparent 62%);
+            opacity: 0;
+            transition: opacity var(--dur-base) var(--ease-smooth);
+            pointer-events: none;
+        }
+
+        .tile:hover {
+            transform: translate3d(0, -4px, 0);
+            background: var(--mat-regular);
+            border-color: var(--hairline-strong);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+        }
+
+        .tile:hover::before { opacity: 1; }
+
+        .tile-index {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            color: var(--ink-3);
+            display: block;
+            margin-bottom: 1.6rem;
+        }
+
+        .tile h3 {
+            font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 0.7rem;
+            color: var(--ink);
+        }
+
+        .tile p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 300;
+            color: var(--ink-2);
+        }
+
+        /* Brands rail */
+        .brands { padding-block: clamp(3rem, 6vh, 4.5rem); }
+
+        .brands-title {
+            font-size: 0.76rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.16em !important;
+            text-transform: uppercase;
+            color: var(--ink-3) !important;
+            text-align: center;
+            margin-bottom: 2.25rem !important;
+        }
+
+        .brands-marquee::before { background: linear-gradient(90deg, var(--bg), transparent) !important; }
+        .brands-marquee::after  { background: linear-gradient(-90deg, var(--bg), transparent) !important; }
+
+        /* Contact */
+        .contact-card {
+            border-radius: var(--r-xl) !important;
+            padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 4rem) !important;
+            background:
+                radial-gradient(120% 130% at 50% 0%, rgba(46,91,255,0.16), transparent 62%),
+                var(--mat-regular) !important;
+            border: 1px solid var(--hairline) !important;
+            backdrop-filter: blur(30px) saturate(170%);
+            -webkit-backdrop-filter: blur(30px) saturate(170%);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.55) !important;
+            text-align: center;
+        }
+
+        .contact-card h2 {
+            font-size: clamp(2rem, 4.4vw, 3.1rem) !important;
+            font-weight: 600 !important;
+            letter-spacing: -0.03em !important;
+            line-height: 1.05 !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .contact-card > p {
+            font-size: clamp(1rem, 1.5vw, 1.15rem) !important;
+            font-weight: 300 !important;
+            color: var(--ink-2) !important;
+            max-width: 44ch;
+            margin-inline: auto !important;
+        }
+
+        .contact-link {
+            border-radius: 100px !important;
+            background: var(--mat-regular) !important;
+            border: 1px solid var(--hairline) !important;
+            transition: transform var(--dur-fast) var(--ease-sharp),
+                        background var(--dur-fast) var(--ease-sharp),
+                        border-color var(--dur-fast) var(--ease-sharp) !important;
+        }
+
+        .contact-link:hover { background: var(--accent-soft) !important; border-color: rgba(46,91,255,0.45) !important; }
+        .contact-link:active { transform: scale(0.98) !important; }
+
+        .social-icon {
+            border-radius: 50% !important;
+            background: var(--mat-regular) !important;
+            border: 1px solid var(--hairline) !important;
+        }
+
+        .social-icon:active { transform: scale(0.94) !important; }
+
+        /* Upcoming / film card */
+        .upcoming-projects { padding-bottom: clamp(5rem, 10vh, 8rem); }
+
+        .film-card {
+            position: relative;
+            border-radius: var(--r-xl);
+            overflow: hidden;
+            border: 1px solid var(--hairline);
+            background: var(--bg-raised);
+            box-shadow: 0 40px 110px rgba(0,0,0,0.6);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: clamp(3.5rem, 9vw, 7rem) clamp(1.5rem, 5vw, 4rem);
+            isolation: isolate;
+        }
+
+        .film-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(90% 120% at 50% 110%, rgba(46,91,255,0.22), transparent 60%),
+                radial-gradient(60% 80% at 50% -10%, rgba(255,255,255,0.06), transparent 60%);
+        }
+
+        .film-title {
+            font-size: clamp(3rem, 12vw, 8.5rem);
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            line-height: 0.92;
+            margin: 1.25rem 0 1rem;
+            background: linear-gradient(180deg, #FFFFFF 20%, rgba(245,245,247,0.45) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .film-cast {
+            font-size: clamp(0.82rem, 1.4vw, 0.98rem);
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            max-width: 40ch;
+            line-height: 1.7;
+        }
+
+        .film-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            text-decoration: none;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: transform var(--dur-fast) var(--ease-sharp),
+                        background var(--dur-fast) var(--ease-sharp),
+                        border-color var(--dur-fast) var(--ease-sharp);
+        }
+
+        .pill-btn--primary { background: var(--accent); color: #fff; }
+        .pill-btn--primary:hover { background: #4670FF; }
+
+        .pill-btn--ghost {
+            background: var(--mat-regular);
+            border-color: var(--hairline);
+            color: var(--ink);
+        }
+
+        .pill-btn--ghost:hover { background: var(--mat-thick); border-color: var(--hairline-strong); }
+        .pill-btn:active { transform: scale(0.97); }
+        .pill-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .pill-btn svg { width: 15px; height: 15px; }
+
+        /* Footer polish */
+        footer { border-top: 1px solid var(--hairline); background: var(--bg); }
+        .footer-links a { transition: color var(--dur-fast) var(--ease-sharp); }
+
+        /* ============================================================
+           Reveal — gentler, transform/opacity only
+           ============================================================ */
+        .reveal, .reveal-left, .reveal-right, .reveal-scale {
+            transition-duration: var(--dur-slow);
+            transition-timing-function: var(--ease-smooth);
+        }
+
+        .reveal-left.out, .reveal-right.out, .reveal.out, .reveal-scale.out {
+            opacity: 0;
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translate3d(0, 22px, 0);
+            transition: opacity var(--dur-slow) var(--ease-smooth),
+                        transform var(--dur-slow) var(--ease-smooth);
+        }
+
+        .fade-up.active { opacity: 1; transform: none; }
+
+        /* ============================================================
+           Accessibility preferences
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            html { scroll-behavior: auto; }
+
+            .marquee-track,
+            .brands-track,
+            .directors-track { animation: none !important; }
+
+            .story-slide {
+                transform: none !important;
+                filter: none !important;
+                transition: opacity 200ms linear !important;
+            }
+
+            .fade-up { opacity: 1; transform: none; }
+            .person:hover, .tile:hover { transform: none; }}
+
+        @media (prefers-reduced-transparency: reduce) {
+            .story-stage,
+            .contact-card,
+            .glass-btn,
+            .person-badge,
+            .trailer-play span,
+            nav {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                background: #131316 !important;
+            }}
+
+        @media (prefers-contrast: more) {
+            :root {
+                --ink-2: rgba(245,245,247,0.92);
+                --ink-3: rgba(245,245,247,0.75);
+                --hairline: rgba(255,255,255,0.3);
+            }}    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -1892,9 +1961,10 @@
         <div class="nav-container">
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
+                <li><a href="#trailer">Trailer</a></li>
+                <li><a href="#about">Story</a></li>
                 <li><a href="#services">Services</a></li>
-                <li><a href="#directors">Directors</a></li>
+                <li><a href="#team">Team</a></li>
                 <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
             </ul>
             <div class="mobile-menu">
@@ -1914,7 +1984,7 @@
                     <source src="LOGO_MGFX_V001.mp4" type="video/mp4">
                 </video>
             </div>
-            
+
             <!-- Subtle Particles -->
             <div class="particles">
                 <div class="particle" style="left: 15%; animation-delay: 0s;"></div>
@@ -1937,282 +2007,254 @@
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="section-logo-accent top-right">
-            <img src="20D5597A.png" alt="">
-        </div>
-        
-        <!-- Hero Content with Logo Animation -->
-        <div class="about-hero-container">
-            <div class="about-hero-text reveal-left">
-                <span class="hero-badge">Production House</span>
-                <h1 class="hero-title">
-                    <span class="kinetic">Where</span> <span class="kinetic highlight">Art</span> 
-                    <span class="kinetic">Echoes</span><br>
-                    <span class="kinetic">Beyond</span> <span class="kinetic">Boundaries</span>
-                </h1>
-                <p class="hero-subtitle">
-                    An umbrella company encompassing all things art. If you believe in yourself, we will chart a way ahead for you.
-                </p>
-                <p class="hero-subtitle-secondary">
-                    Whether you are a writer, director, producer, brand, influencer, or artist — we have solutions curated to your needs.
-                </p>
+    <!-- Trailer Section -->
+    <section class="trailer" id="trailer">
+        <div class="shell">
+            <div class="trailer-head fade-up">
+                <div>
+                    <span class="eyebrow">Now Playing</span>
+                    <h2 class="headline grad-ink">Dial 1975 — Official Trailer</h2>
+                </div>
+                <div class="trailer-meta">
+                    <p class="fine">Feature Film</p>
+                    <p class="fine"><strong>Kay Kay Menon · Kirti Kulhari · Pravessh Rana</strong></p>
+                </div>
             </div>
-            <div class="about-hero-logo scroll-animate-logo reveal-right">
-                <img src="20D5597A.png" alt="Spherecho">
-            </div>
-        </div>
 
-        <!-- Marquee Scrolling Cards -->
-        <div class="marquee-container">
-            <div class="marquee-track">
-                <div class="about-card">
-                    <div class="about-icon">◉</div>
-                    <h3>Our Vision</h3>
-                    <p>Spherecho is a noun crafted from the combination of Sphere + Echo. It signifies continuous growth through a spherical movement with its echo spreading across boundaries and covering 360 degree opportunities.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon">∞</div>
-                    <h3>Our Values</h3>
-                    <p>Like atmosphere around us — boundaryless, we value art above chart. Whoever you are, wherever you are from, we want to create the future of art together.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon">✦</div>
-                    <h3>The Dream</h3>
-                    <p>Whether you are an artist, a company, or an individual — you have a story to tell. Our ultimate goal? Promote art, create a transparent marketplace where the only measure of success is your craft.</p>
-                </div>
-                <!-- Duplicates for seamless loop -->
-                <div class="about-card">
-                    <div class="about-icon">◉</div>
-                    <h3>Our Vision</h3>
-                    <p>Spherecho is a noun crafted from the combination of Sphere + Echo. It signifies continuous growth through a spherical movement with its echo spreading across boundaries and covering 360 degree opportunities.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon">∞</div>
-                    <h3>Our Values</h3>
-                    <p>Like atmosphere around us — boundaryless, we value art above chart. Whoever you are, wherever you are from, we want to create the future of art together.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon">✦</div>
-                    <h3>The Dream</h3>
-                    <p>Whether you are an artist, a company, or an individual — you have a story to tell. Our ultimate goal? Promote art, create a transparent marketplace where the only measure of success is your craft.</p>
+            <div class="trailer-stage fade-up" id="trailerStage" data-video="nOx_nO2VUC0">
+                <img class="trailer-poster"
+                     src="https://i.ytimg.com/vi/nOx_nO2VUC0/maxresdefault.jpg"
+                     alt="Dial 1975 official trailer"
+                     loading="lazy"
+                     onerror="this.src='https://i.ytimg.com/vi/nOx_nO2VUC0/hqdefault.jpg'">
+
+                <button class="trailer-play" id="trailerPlay" type="button" aria-label="Play the Dial 1975 trailer">
+                    <span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    </span>
+                </button>
+
+                <div class="trailer-controls">
+                    <span class="trailer-live"><span class="dot"></span> Trailer</span>
+                    <div style="display:flex; gap:0.6rem;">
+                        <button class="glass-btn" id="trailerToggle" type="button" aria-label="Pause the trailer">
+                            <svg id="trailerToggleIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M6 5h4v14H6zM14 5h4v14h-4z"/>
+                            </svg>
+                            <span id="trailerToggleLabel">Pause</span>
+                        </button>
+                        <button class="glass-btn" id="trailerSound" type="button" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M11 5 6 9H2v6h4l5 4V5z"/>
+                                <path d="m23 9-6 6M17 9l6 6"/>
+                            </svg>
+                            <span id="trailerSoundLabel">Unmute</span>
+                        </button>
+                        <a class="glass-btn" href="https://youtu.be/nOx_nO2VUC0" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                <path d="M15 3h6v6M10 14 21 3"/>
+                            </svg>
+                            <span class="btn-text-full">Watch on YouTube</span>
+                            <span class="btn-text-short">YouTube</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Founders Section -->
-    <section class="founders" id="founders">
-        <div class="section-header reveal-left">
-            <span class="section-label">Leadership</span>
-            <h2 class="section-title">Our Founders</h2>
-            <p class="section-subtitle">
-                Visionary leaders driving the future of art and storytelling.
-            </p>
-        </div>
-
-        <div class="founders-grid">
-            <div class="founder-card reveal">
-                <div class="founder-image">
-                    <img src="IMG_6782.png" alt="Niranjan Das">
+    <!-- Story Section — hero copy + vision/values/dream, unified -->
+    <section class="story" id="about">
+        <div class="shell">
+            <div class="story-grid">
+                <div class="story-copy fade-up">
+                    <img src="20D5597A.png" alt="" class="story-mark">
+                    <span class="eyebrow">Production House</span>
+                    <h2 class="display grad-ink">Where art echoes beyond <em>boundaries</em>.</h2>
+                    <p class="lede">An umbrella company for everything art.</p>
+                    <p class="lede">Writer, director, producer, brand, influencer or artist — we build the path that fits you.</p>
+                    <p class="lede">If you believe in yourself, we will chart the way ahead.</p>
                 </div>
-                <div class="founder-info">
-                    <h3>Niranjan Das</h3>
-                    <span class="founder-title">Director</span>
-                    <p>With over 40 years of experience in leadership roles across the coal and environmental sectors, Niranjan Das brings a unique blend of strategic vision and creative passion to his role as a producer. A former Director at Coal India Ltd and Advisor to the Chhattisgarh State Electricity Board, he has honed his expertise in team management, business planning, and sustainable practices. Now, as Director at Spherecho Productions, Niranjan leverages his diverse background to produce impactful stories that inspire meaningful cultural change.</p>
+
+                <div class="story-stage fade-up"
+                     id="storyStage"
+                     tabindex="0"
+                     role="group"
+                     aria-roledescription="carousel"
+                     aria-label="What Spherecho stands for">
+
+                    <div class="story-slides">
+                        <article class="story-slide is-active" role="tabpanel" aria-label="Our Vision">
+                            <span class="slide-icon" aria-hidden="true">◉</span>
+                            <h3>Our Vision</h3>
+                            <p>Spherecho is Sphere plus Echo — growth that moves in every direction at once.</p>
+                            <p>One idea, echoing past every boundary. Three hundred and sixty degrees of opportunity.</p>
+                        </article>
+
+                        <article class="story-slide" role="tabpanel" aria-label="Our Values">
+                            <span class="slide-icon" aria-hidden="true">∞</span>
+                            <h3>Our Values</h3>
+                            <p>Boundaryless, like the atmosphere around us.</p>
+                            <p>We value art above chart. Whoever you are, wherever you are from, we want to build the future of art with you.</p>
+                        </article>
+
+                        <article class="story-slide" role="tabpanel" aria-label="The Dream">
+                            <span class="slide-icon" aria-hidden="true">✦</span>
+                            <h3>The Dream</h3>
+                            <p>Artist, company or individual — everyone has a story to tell.</p>
+                            <p>Ours is a transparent marketplace where craft is the only measure of success.</p>
+                        </article>
+                    </div>
+
+                    <div class="story-nav" role="tablist" aria-label="Choose a chapter">
+                        <button class="story-dot is-active" type="button" role="tab" aria-selected="true"  aria-label="Our Vision"></button>
+                        <button class="story-dot"           type="button" role="tab" aria-selected="false" aria-label="Our Values"></button>
+                        <button class="story-dot"           type="button" role="tab" aria-selected="false" aria-label="The Dream"></button>
+                    </div>
                 </div>
             </div>
-            <div class="founder-card reveal">
-                <div class="founder-image">
-                    <img src="IMG_6783.png" alt="Ranaksh Rana">
+        </div>
+    </section>
+
+    <!-- Team Section — founders first, then crew -->
+    <section class="team" id="team">
+        <div class="shell">
+            <div class="team-head fade-up">
+                <div>
+                    <span class="eyebrow">Leadership &amp; Crew</span>
+                    <h2 class="headline grad-ink">The team behind Dial 1975</h2>
                 </div>
-                <div class="founder-info">
-                    <h3>Ranaksh Rana</h3>
-                    <span class="founder-title">Director & Co-founder</span>
-                    <p>Ranaksh Rana is a banker-turned-producer with the soul of an artist, deeply committed to promoting Indian art and culture. "Dial 1975" marks his debut feature film. As the Director and Co-founder of Spherecho Productions Pvt. Ltd., he believes that stories lie in every corner of India, and that cinema is a powerful medium to inspire, entertain, and effect change. Beyond filmmaking, Ranaksh is the creator of Voice of Artist—a platform by artists, for artists—dedicated to nurturing creative energy and realising the vision of Vasudhaiva Kutumbakam through art. He is also a theatre artist-turned-actor.</p>
-                </div>
+                <p class="lede">Founders who backed the story, and the craftspeople who put it on screen.</p>
+            </div>
+
+            <div class="team-grid">
+                <!-- Founders -->
+                <article class="person person--lead fade-up">
+                    <div class="person-media">
+                        <span class="person-badge person-badge--founder">Co-founder</span>
+                        <img src="IMG_6782.png" alt="Niranjan Das" loading="lazy">
+                    </div>
+                    <div class="person-body">
+                        <h3>Niranjan Das</h3>
+                        <span class="person-role">Director &amp; Co-founder</span>
+                        <p>Four decades of leadership across India's coal and environmental sectors — former Director at Coal India Ltd and Advisor to the Chhattisgarh State Electricity Board.</p>
+                        <p>He brings that strategic discipline to producing stories that move culture forward.</p>
+                    </div>
+                </article>
+
+                <article class="person person--lead fade-up">
+                    <div class="person-media">
+                        <span class="person-badge person-badge--founder">Co-founder</span>
+                        <img src="IMG_6783.png" alt="Ranaksh Rana" loading="lazy">
+                    </div>
+                    <div class="person-body">
+                        <h3>Ranaksh Rana</h3>
+                        <span class="person-role">Director &amp; Co-founder</span>
+                        <p>A banker turned producer with the soul of an artist. Dial 1975 is his debut feature.</p>
+                        <p>He also created Voice of Artist — a platform by artists, for artists — and works as a theatre artist and actor.</p>
+                    </div>
+                </article>
+
+                <!-- Crew -->
+                <article class="person fade-up">
+                    <div class="person-media">
+                        <span class="person-badge">VFX</span>
+                        <img src="IMG_6780.JPG" alt="Ashutosh Pandey" loading="lazy">
+                    </div>
+                    <div class="person-body">
+                        <h3>Ashutosh Pandey</h3>
+                        <span class="person-role">VFX Supervisor &amp; Compositor</span>
+                        <p>VFX Supervisor on Drishyam 2, Jamtara and Crackk. Post-supervisor VFX on PS I.</p>
+                        <p>Compositor on Venom, Avengers: Endgame, Mowgli, Ant-Man, Wonder Woman and Fantastic Beasts.</p>
+                        <div class="person-links">
+                            <a class="chip" href="https://m.imdb.com/name/nm11152660/" target="_blank" rel="noopener">
+                                IMDb
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="person fade-up">
+                    <div class="person-media">
+                        <span class="person-badge">Direction</span>
+                        <img src="TAB-128.jpg" alt="Taher Ali Baig" loading="lazy">
+                    </div>
+                    <div class="person-body">
+                        <h3>Taher Ali Baig</h3>
+                        <span class="person-role">Theatre Director, Playwright &amp; Filmmaker</span>
+                        <p>South India's theatre powerhouse — Blithe Spirit, Ali Baba 40 Chor, Matilda and SuperLosers.</p>
+                        <p>Award-winning filmmaker with Fitrat, and ad director for Kiana Skincare and Volvo Cars.</p>
+                        <div class="person-links">
+                            <a class="chip" href="https://en.wikipedia.org/wiki/Taher_Ali_Baig" target="_blank" rel="noopener">Wikipedia</a>
+                            <a class="chip" href="https://www.instagram.com/taheralibaig/" target="_blank" rel="noopener">Instagram</a>
+                            <a class="chip" href="https://www.facebook.com/taheralibaigofficial" target="_blank" rel="noopener">Facebook</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="person fade-up">
+                    <div class="person-media">
+                        <span class="person-badge">Direction</span>
+                        <img src="PHOTO-2026-01-14-16-46-25.jpg" alt="Vibhu Kashyap" loading="lazy">
+                    </div>
+                    <div class="person-body">
+                        <h3>Vibhu Kashyap</h3>
+                        <span class="person-role">Film Director &amp; Writer</span>
+                        <p>Twenty years in filmmaking. Directed Tatlubaaz for EpicOn and the Grey Stories anthology.</p>
+                        <p>Sr. Creative Director on Asur. Has worked with Manoj Bajpayee, Arshad Warsi and Nargis Fakhri.</p>
+                        <div class="person-links">
+                            <a class="chip" href="https://www.youtube.com/watch?v=gsbrmNDCm1w" target="_blank" rel="noopener">Tatlubaaz</a>
+                            <a class="chip" href="https://www.youtube.com/watch?v=LDirQBvwx7g" target="_blank" rel="noopener">Asur</a>
+                            <a class="chip" href="https://m.imdb.com/name/nm2215224/" target="_blank" rel="noopener">IMDb</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="person fade-up">
+                    <div class="person-media">
+                        <span class="person-badge">Colour</span>
+                        <img src="Shashank jha - Colourist.png" alt="Shashank Jha" loading="lazy">
+                    </div>
+                    <div class="person-body">
+                        <h3>Shashank Jha</h3>
+                        <span class="person-role">Senior Colorist</span>
+                        <p>A decade in post-production, working solely on DaVinci Resolve.</p>
+                        <p>Cinematic precision and a storyteller's instinct for tone and mood in every frame.</p>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
 
     <!-- Services Section -->
     <section class="services" id="services">
-        <div class="section-logo-accent bottom-left">
-            <img src="20D5597A.png" alt="">
-        </div>
-        <div class="section-header reveal-left">
-            <span class="section-label">What We Do</span>
-            <h2 class="section-title">The Sphere of Spherecho</h2>
-            <p class="section-subtitle">
-                Comprehensive solutions for every creative need.
-            </p>
-        </div>
-
-        <div class="services-grid">
-            <div class="service-card reveal">
-                <div class="service-icon">🎬</div>
-                <h3>Production House</h3>
-                <p>End-to-end or customized packages of writers, directors, producers and actors for your creative vision.</p>
-            </div>
-            <div class="service-card reveal">
-                <div class="service-icon">📺</div>
-                <h3>Ad Filmmaking</h3>
-                <p>Brands and Ads — a match made in heaven. And we are the matchmakers bringing your brand story to life.</p>
-            </div>
-            <div class="service-card reveal">
-                <div class="service-icon">📢</div>
-                <h3>PR & Promotion</h3>
-                <p>We can't scream from the top of the hills. But we sure can create a noise in the air that resonates.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Directors Section -->
-    <section class="directors" id="directors">
-        <div class="section-logo-accent center-bg">
-            <img src="20D5597A.png" alt="">
-        </div>
-        <div class="section-header reveal-left">
-            <span class="section-label">Meet Our Team</span>
-            <h2 class="section-title">Creative Team</h2>
-            <p class="section-subtitle">
-                Having directed 50+ ads for brands across industries, our directors are multi-faceted with innovative treatment and creative narrative.
-            </p>
-        </div>
-
-        <!-- Directors Marquee -->
-        <div class="directors-marquee">
-            <div class="directors-track">
-            <div class="director-card director-card-featured">
-                <div class="director-image">
-                    <img src="IMG_6780.jpg" alt="Ashutosh Pandey">
+        <div class="shell">
+            <div class="team-head fade-up">
+                <div>
+                    <span class="eyebrow">What We Do</span>
+                    <h2 class="headline grad-ink">The sphere of Spherecho</h2>
                 </div>
-                <div class="director-info">
-                    <h3>Ashutosh Pandey</h3>
-                    <span class="director-title">VFX Supervisor & Compositor</span>
-                    <p>VFX Supervisor for Drishyam 2, Jamtara, Crackk. Post-supervisor VFX for PS I. Compositor for Venom, Avengers: Endgame, Mowgli, Ant-Man, Wonder Woman, Fantastic Beasts.</p>
-                    <a href="https://m.imdb.com/name/nm11152660/" target="_blank" class="director-link">
-                        IMDB Profile
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                </div>
+                <p class="lede">Three ways in. Every one of them ends with your story on a screen.</p>
             </div>
 
-            <div class="director-card director-card-featured">
-                <div class="director-image">
-                    <img src="TAB-128.jpg" alt="Taher Ali Baig">
-                </div>
-                <div class="director-info">
-                    <h3>Taher Ali Baig</h3>
-                    <span class="director-title">Theatre Director, Playwright & Filmmaker</span>
-                    <p>South India's Theatre Powerhouse dubbed the "Hitman of Plays." Productions include Blithe Spirit, Ali Baba 40 Chor, Matilda, SuperLosers, and more. Award-winning filmmaker (Fitrat - 40 Awards). Ad filmmaker for Kiana Skincare, Volvo Cars. Champion of children's theatre and mentor for aspiring artists.</p>
-                    <div class="director-links-grid">
-                        <a href="https://en.wikipedia.org/wiki/Taher_Ali_Baig" target="_blank" class="director-link">Wikipedia</a>
-                        <a href="https://www.instagram.com/taheralibaig/" target="_blank" class="director-link">Instagram</a>
-                        <a href="https://www.facebook.com/taheralibaigofficial" target="_blank" class="director-link">Facebook</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="director-card director-card-featured">
-                <div class="director-image">
-                    <img src="PHOTO-2026-01-14-16-46-25.jpg" alt="Vibhu Kashyap">
-                </div>
-                <div class="director-info">
-                    <h3>Vibhu Kashyap</h3>
-                    <span class="director-title">Film Director & Writer</span>
-                    <p>20+ years in filmmaking. Directed "Tatlubaaz" (EpicOn), "Grey Stories" anthology, Sr. Creative Director for "Asur" (IMDB 8.5). Worked with Manoj Bajpayee, Arshad Warsi, Nargis Fakhri. Assistant Director on multiple National Award films.</p>
-                    <div class="director-links-grid">
-                        <a href="https://www.youtube.com/watch?v=gsbrmNDCm1w" target="_blank" class="director-link">
-                            Tatlubaaz
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                        <a href="https://www.youtube.com/watch?v=LDirQBvwx7g" target="_blank" class="director-link">
-                            Asur
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                        <a href="https://m.imdb.com/name/nm2215224/?ref_=nm_rvi_nm_i_1" target="_blank" class="director-link">
-                            IMDB
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="director-card director-card-featured">
-                <div class="director-image">
-                    <img src="Shashank jha - Colourist.png" alt="Shashank Jha">
-                </div>
-                <div class="director-info">
-                    <h3>Shashank Jha</h3>
-                    <span class="director-title">Senior Colorist</span>
-                    <p>With over a decade in the post-production industry, Shashank is a highly accomplished colorist known for his cinematic precision and storytelling instincts. Working solely on DaVinci Resolve, he brings deep understanding of tone, mood, and narrative to every frame.</p>
-                </div>
-            </div>
-            <!-- Duplicates for seamless loop -->
-            <div class="director-card director-card-featured">
-                <div class="director-image">
-                    <img src="IMG_6780.jpg" alt="Ashutosh Pandey">
-                </div>
-                <div class="director-info">
-                    <h3>Ashutosh Pandey</h3>
-                    <span class="director-title">VFX Supervisor & Compositor</span>
-                    <p>VFX Supervisor for Drishyam 2, Jamtara, Crackk. Compositor for Venom, Avengers: Endgame, Mowgli, Ant-Man, Wonder Woman, Fantastic Beasts.</p>
-                    <a href="https://m.imdb.com/name/nm11152660/" target="_blank" class="director-link">
-                        IMDB Profile
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div class="director-card director-card-featured">
-                <div class="director-image">
-                    <img src="TAB-128.jpg" alt="Taher Ali Baig">
-                </div>
-                <div class="director-info">
-                    <h3>Taher Ali Baig</h3>
-                    <span class="director-title">Theatre Director & Filmmaker</span>
-                    <p>South India's Theatre Powerhouse. Award-winning filmmaker (Fitrat). Ad filmmaker for Kiana Skincare, Volvo Cars. Champion of children's theatre.</p>
-                    <div class="director-links-grid">
-                        <a href="https://en.wikipedia.org/wiki/Taher_Ali_Baig" target="_blank" class="director-link">Wikipedia</a>
-                        <a href="https://www.instagram.com/taheralibaig/" target="_blank" class="director-link">Instagram</a>
-                    </div>
-                </div>
-            </div>
-            <div class="director-card director-card-featured">
-                <div class="director-image">
-                    <img src="PHOTO-2026-01-14-16-46-25.jpg" alt="Vibhu Kashyap">
-                </div>
-                <div class="director-info">
-                    <h3>Vibhu Kashyap</h3>
-                    <span class="director-title">Film Director & Writer</span>
-                    <p>20+ years in filmmaking. Directed "Tatlubaaz", "Grey Stories", Sr. Creative Director for "Asur" (IMDB 8.5).</p>
-                    <div class="director-links-grid">
-                        <a href="https://www.youtube.com/watch?v=gsbrmNDCm1w" target="_blank" class="director-link">Tatlubaaz</a>
-                        <a href="https://www.youtube.com/watch?v=LDirQBvwx7g" target="_blank" class="director-link">Asur</a>
-                    </div>
-                </div>
-            </div>
-            <div class="director-card director-card-featured">
-                <div class="director-image">
-                    <img src="Shashank jha - Colourist.png" alt="Shashank Jha">
-                </div>
-                <div class="director-info">
-                    <h3>Shashank Jha</h3>
-                    <span class="director-title">Senior Colorist</span>
-                    <p>With over a decade in the post-production industry, Shashank is a highly accomplished colorist known for his cinematic precision and storytelling instincts. Working solely on DaVinci Resolve, he brings deep understanding of tone, mood, and narrative to every frame.</p>
-                </div>
-            </div>
+            <div class="services-grid">
+                <article class="tile fade-up">
+                    <span class="tile-index">01</span>
+                    <h3>Production House</h3>
+                    <p>End-to-end, or a package built to order — writers, directors, producers and actors for your vision.</p>
+                </article>
+                <article class="tile fade-up">
+                    <span class="tile-index">02</span>
+                    <h3>Ad Filmmaking</h3>
+                    <p>Brands and ads are a match made in heaven. We are the matchmakers.</p>
+                </article>
+                <article class="tile fade-up">
+                    <span class="tile-index">03</span>
+                    <h3>PR &amp; Promotion</h3>
+                    <p>We can't shout from the top of a hill. We can make a noise in the air that resonates.</p>
+                </article>
             </div>
         </div>
     </section>
@@ -2359,13 +2401,19 @@
     </section>
 
     <!-- Upcoming Projects Section -->
-    <section class="upcoming-projects">
-        <div class="upcoming-content reveal-scale">
-            <span class="section-label">Coming Soon</span>
-            <h2 class="upcoming-title">Upcoming Projects</h2>
-            <div class="upcoming-hero">
-                <h1 class="project-name">Dial 1975</h1>
-                <p class="project-tagline">A Spherecho Productions Feature Film</p>
+    <section class="upcoming-projects" id="upcoming">
+        <div class="shell">
+            <div class="film-card fade-up">
+                <span class="eyebrow">In Production</span>
+                <h2 class="film-title">Dial 1975</h2>
+                <p class="film-cast">Kay Kay Menon &nbsp;·&nbsp; Kirti Kulhari &nbsp;·&nbsp; Pravessh Rana</p>
+                <div class="film-actions">
+                    <a class="pill-btn pill-btn--primary" href="#trailer">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                        Watch the trailer
+                    </a>
+                    <a class="pill-btn pill-btn--ghost" href="mailto:partners@spherechoproductions.com">Enquire about the film</a>
+                </div>
             </div>
         </div>
     </section>
@@ -2382,9 +2430,9 @@
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#about">Our Story</a></li>
                         <li><a href="#services">Services</a></li>
-                        <li><a href="#directors">Directors</a></li>
+                        <li><a href="#team">Team</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
@@ -2439,174 +2487,385 @@
     </footer>
 
     <script>
-        // Mobile Menu Toggle
-        const mobileMenu = document.querySelector('.mobile-menu');
-        const navLinks = document.querySelector('.nav-links');
+    (function () {
+        'use strict';
 
-        mobileMenu.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                navLinks.classList.remove('active');
+        /* ---------------------------------------------------------
+           Navigation
+           --------------------------------------------------------- */
+        var mobileMenu = document.querySelector('.mobile-menu');
+        var navLinks = document.querySelector('.nav-links');
+
+        if (mobileMenu && navLinks) {
+            mobileMenu.addEventListener('click', function () {
+                mobileMenu.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        document.querySelectorAll('.nav-links a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (mobileMenu) mobileMenu.classList.remove('active');
+                if (navLinks) navLinks.classList.remove('active');
             });
         });
 
-        // Navbar hide/show on scroll
-        let lastScrollTop = 0;
-        let scrollThreshold = 100;
-        
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            const currentScroll = window.scrollY;
-            
-            // Add scrolled class for styling
-            if (currentScroll > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-            
-            // Hide/show navbar based on scroll direction
-            if (currentScroll > scrollThreshold) {
-                if (currentScroll > lastScrollTop) {
-                    // Scrolling down
-                    nav.classList.add('nav-hidden');
-                } else {
-                    // Scrolling up
-                    nav.classList.remove('nav-hidden');
-                }
+        var nav = document.querySelector('nav');
+        var lastScrollTop = 0;
+        var navTicking = false;
+
+        function updateNav() {
+            var current = window.scrollY;
+            if (!nav) return;
+
+            nav.classList.toggle('scrolled', current > 50);
+
+            if (current > 100) {
+                nav.classList.toggle('nav-hidden', current > lastScrollTop);
             } else {
                 nav.classList.remove('nav-hidden');
             }
-            
-            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
-        });
 
-        // Kinetic text effect on scroll
-        const kineticElements = document.querySelectorAll('.kinetic');
-        let lastScrollY = window.scrollY;
+            lastScrollTop = current <= 0 ? 0 : current;
+            navTicking = false;
+        }
 
-        window.addEventListener('scroll', () => {
-            const scrollDelta = window.scrollY - lastScrollY;
-            kineticElements.forEach((el, index) => {
-                const offset = scrollDelta * 0.1 * (index % 2 === 0 ? 1 : -1);
-                el.style.transform = `translateY(${offset}px)`;
-            });
-            
-            setTimeout(() => {
-                kineticElements.forEach(el => {
-                    el.style.transform = 'translateY(0)';
-                });
-            }, 150);
-            
-            lastScrollY = window.scrollY;
-        });
-
-        // Enhanced Scroll Animation with bi-directional reveals
-        const allRevealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
-        let lastScrollPosition = window.scrollY;
-        let animationTicking = false;
-        
-        const handleScrollAnimations = () => {
-            const scrollY = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const scrollingDown = scrollY > lastScrollPosition;
-            
-            allRevealElements.forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                const elementTop = rect.top;
-                const elementBottom = rect.bottom;
-                const revealPoint = windowHeight * 0.88;
-                const exitPoint = windowHeight * -0.40; // When to start exit animation (40% scrolled past top)
-                
-                // Element is in the sweet spot - fully visible
-                if (elementTop < revealPoint && elementTop > exitPoint) {
-                    el.classList.add('active');
-                    el.classList.remove('out');
-                }
-                // Element is leaving the top of viewport (scrolling down)
-                else if (elementTop < exitPoint && elementTop > -rect.height) {
-                    // Start exit animation
-                    el.classList.remove('active');
-                    el.classList.add('out');
-                }
-                // Element has completely left the top
-                else if (elementBottom < 0) {
-                    el.classList.remove('active');
-                    el.classList.add('out');
-                }
-                // Element is below viewport - reset for re-entry
-                else if (elementTop > windowHeight) {
-                    el.classList.remove('active', 'out');
-                }
-            });
-            
-            lastScrollPosition = scrollY;
-            animationTicking = false;
-        };
-
-        const onScrollAnimate = () => {
-            if (!animationTicking) {
-                requestAnimationFrame(handleScrollAnimations);
-                animationTicking = true;
+        window.addEventListener('scroll', function () {
+            if (!navTicking) {
+                requestAnimationFrame(updateNav);
+                navTicking = true;
             }
-        };
+        }, { passive: true });
 
-        window.addEventListener('scroll', onScrollAnimate, { passive: true });
-        handleScrollAnimations(); // Initial check
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+        /* Smooth scrolling for in-page anchors */
+        document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+            anchor.addEventListener('click', function (e) {
+                var id = this.getAttribute('href');
+                if (!id || id === '#') return;
+                var target = document.querySelector(id);
+                if (!target) return;
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+                target.scrollIntoView({
+                    behavior: reduceMotion.matches ? 'auto' : 'smooth',
+                    block: 'start'
+                });
             });
         });
 
-        // Parallax effect for video
-        window.addEventListener('scroll', () => {
-            const videoContainer = document.querySelector('.hero-video-container');
-            const scrolled = window.scrollY;
-            if (videoContainer && scrolled < window.innerHeight) {
-                videoContainer.style.opacity = Math.max(0.05, 0.35 - (scrolled * 0.0003));
+        /* ---------------------------------------------------------
+           Reveal on scroll — opacity + transform only
+           --------------------------------------------------------- */
+        var revealTargets = document.querySelectorAll(
+            '.fade-up, .reveal, .reveal-left, .reveal-right, .reveal-scale'
+        );
+
+        if ('IntersectionObserver' in window) {
+            var revealObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        entry.target.classList.remove('out');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+            revealTargets.forEach(function (el) { revealObserver.observe(el); });
+        } else {
+            revealTargets.forEach(function (el) { el.classList.add('active'); });
+        }
+
+        /* ---------------------------------------------------------
+           Hero video — fade out as it scrolls away
+           --------------------------------------------------------- */
+        var videoContainer = document.querySelector('.hero-video-container');
+        var heroTicking = false;
+
+        if (videoContainer) {
+            window.addEventListener('scroll', function () {
+                if (heroTicking) return;
+                requestAnimationFrame(function () {
+                    var scrolled = window.scrollY;
+                    if (scrolled < window.innerHeight) {
+                        videoContainer.style.opacity = Math.max(0.05, 0.35 - scrolled * 0.0003);
+                    }
+                    heroTicking = false;
+                });
+                heroTicking = true;
+            }, { passive: true });
+
+            var heroVideo = document.querySelector('.hero-video');
+            if (heroVideo) {
+                var attempt = heroVideo.play();
+                if (attempt && attempt.catch) attempt.catch(function () { /* autoplay blocked */ });
             }
-        });
+        }
 
-        // Logo scroll animation in about section
-        const scrollAnimateLogo = document.querySelector('.scroll-animate-logo');
-        const observerOptions = {
-            threshold: 0.3,
-            rootMargin: '0px 0px -100px 0px'
-        };
+        /* ---------------------------------------------------------
+           Trailer — mount the iframe only when the box is on screen,
+           autoplay muted, pause when it leaves.
+           --------------------------------------------------------- */
+        var stage = document.getElementById('trailerStage');
 
-        const logoObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-in');
+        if (stage) {
+            var videoId = stage.getAttribute('data-video');
+            var frame = null;
+            var muted = true;
+
+            var soundBtn = document.getElementById('trailerSound');
+            var soundLabel = document.getElementById('trailerSoundLabel');
+            var playBtn = document.getElementById('trailerPlay');
+            var toggleBtn = document.getElementById('trailerToggle');
+            var toggleIcon = document.getElementById('trailerToggleIcon');
+            var toggleLabel = document.getElementById('trailerToggleLabel');
+            var userPaused = false;
+
+            var ICON_PAUSE = 'M6 5h4v14H6zM14 5h4v14h-4z';
+            var ICON_PLAY = 'M8 5v14l11-7z';
+
+            function syncToggle() {
+                if (!toggleBtn) return;
+                if (toggleIcon) toggleIcon.firstElementChild.setAttribute('d', userPaused ? ICON_PLAY : ICON_PAUSE);
+                if (toggleLabel) toggleLabel.textContent = userPaused ? 'Play' : 'Pause';
+                toggleBtn.setAttribute('aria-label', userPaused ? 'Play the trailer' : 'Pause the trailer');
+            }
+
+            function command(func, args) {
+                if (!frame || !frame.contentWindow) return;
+                frame.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: func,
+                    args: args || []
+                }), '*');
+            }
+
+            function mount() {
+                if (frame) return;
+
+                var params = [
+                    'autoplay=1',
+                    'mute=1',
+                    'loop=1',
+                    'playlist=' + videoId,
+                    'controls=0',
+                    'modestbranding=1',
+                    'rel=0',
+                    'playsinline=1',
+                    'enablejsapi=1'
+                ];
+
+                if (location.protocol === 'http:' || location.protocol === 'https:') {
+                    params.push('origin=' + encodeURIComponent(location.origin));
+                }
+
+                frame = document.createElement('iframe');
+                frame.src = 'https://www.youtube.com/embed/' + videoId + '?' + params.join('&');
+                frame.title = 'Dial 1975 — Official Trailer';
+                frame.allow = 'autoplay; encrypted-media; picture-in-picture';
+                frame.setAttribute('allowfullscreen', '');
+                frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+
+                stage.insertBefore(frame, stage.firstChild);
+                stage.classList.add('is-live');
+            }
+
+            if ('IntersectionObserver' in window) {
+                var stageObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            mount();
+                            if (!userPaused) command('playVideo');
+                        } else if (frame) {
+                            command('pauseVideo');
+                        }
+                    });
+                }, { threshold: 0.35 });
+
+                stageObserver.observe(stage);
+            } else {
+                mount();
+            }
+
+            if (playBtn) {
+                playBtn.addEventListener('click', function () {
+                    mount();
+                    userPaused = false;
+                    command('playVideo');
+                    syncToggle();
+                });
+            }
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function () {
+                    mount();
+                    userPaused = !userPaused;
+                    command(userPaused ? 'pauseVideo' : 'playVideo');
+                    syncToggle();
+                });
+            }
+
+            if (soundBtn) {
+                soundBtn.addEventListener('click', function () {
+                    mount();
+                    muted = !muted;
+                    command(muted ? 'mute' : 'unMute');
+                    if (!muted) { userPaused = false; command('playVideo'); syncToggle(); }
+                    soundBtn.setAttribute('aria-pressed', String(!muted));
+                    if (soundLabel) soundLabel.textContent = muted ? 'Unmute' : 'Mute';
+                });
+            }
+
+            /* Don't keep a hidden tab playing */
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden && frame) command('pauseVideo');
+            });
+        }
+
+        /* ---------------------------------------------------------
+           Story carousel — auto-advancing, draggable, interruptible
+           --------------------------------------------------------- */
+        var storyStage = document.getElementById('storyStage');
+
+        if (storyStage) {
+            var slides = Array.prototype.slice.call(storyStage.querySelectorAll('.story-slide'));
+            var dots = Array.prototype.slice.call(storyStage.querySelectorAll('.story-dot'));
+            var track = storyStage.querySelector('.story-slides');
+            var DWELL = 6200;
+            var index = 0;
+            var timer = null;
+            var paused = false;
+
+            function render(next) {
+                index = (next + slides.length) % slides.length;
+
+                slides.forEach(function (slide, i) {
+                    slide.classList.toggle('is-active', i === index);
+                });
+
+                dots.forEach(function (dot, i) {
+                    /* Restart the fill animation from zero on the newly active pill */
+                    dot.classList.remove('is-active', 'is-seen');
+                    void dot.offsetWidth;
+                    if (i === index) dot.classList.add('is-active');
+                    else if (i < index) dot.classList.add('is-seen');
+                    dot.setAttribute('aria-selected', String(i === index));
+                });
+            }
+
+            function schedule() {
+                clearTimeout(timer);
+                if (paused) return;
+                timer = setTimeout(function () { render(index + 1); schedule(); }, DWELL);
+            }
+
+            function go(next) { render(next); schedule(); }
+
+            function pause() {
+                paused = true;
+                clearTimeout(timer);
+                storyStage.classList.add('is-paused');
+            }
+
+            function resume() {
+                paused = false;
+                storyStage.classList.remove('is-paused');
+                schedule();
+            }
+
+            dots.forEach(function (dot, i) {
+                dot.addEventListener('click', function () { go(i); });
+            });
+
+            storyStage.addEventListener('mouseenter', pause);
+            storyStage.addEventListener('mouseleave', resume);
+            storyStage.addEventListener('focusin', pause);
+            storyStage.addEventListener('focusout', function (e) {
+                if (!storyStage.contains(e.relatedTarget)) resume();
+            });
+
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) pause(); else resume();
+            });
+
+            storyStage.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowRight') { e.preventDefault(); go(index + 1); }
+                if (e.key === 'ArrowLeft')  { e.preventDefault(); go(index - 1); }
+            });
+
+            /* Drag: track the pointer with resistance, then project momentum
+               to decide whether the gesture commits to the next slide. */
+            var dragging = false;
+            var startX = 0;
+            var samples = [];
+
+            function projectMomentum(velocity, deceleration) {
+                deceleration = deceleration || 0.998;
+                return (velocity / 1000) * deceleration / (1 - deceleration);
+            }
+
+            storyStage.addEventListener('pointerdown', function (e) {
+                if (e.target.closest('.story-dot') || e.target.closest('a')) return;
+                dragging = true;
+                startX = e.clientX;
+                samples = [{ x: e.clientX, t: performance.now() }];
+                storyStage.setPointerCapture(e.pointerId);
+                pause();
+                if (track) track.style.transition = 'none';
+            });
+
+            storyStage.addEventListener('pointermove', function (e) {
+                if (!dragging || !track) return;
+                var dx = e.clientX - startX;
+                samples.push({ x: e.clientX, t: performance.now() });
+                if (samples.length > 6) samples.shift();
+                /* Resistance — hint in the direction of the gesture, don't follow 1:1 */
+                if (!reduceMotion.matches) {
+                    track.style.transform = 'translate3d(' + dx * 0.32 + 'px, 0, 0)';
                 }
             });
-        }, observerOptions);
 
-        if (scrollAnimateLogo) {
-            logoObserver.observe(scrollAnimateLogo);
-        }
+            function endDrag(e) {
+                if (!dragging) return;
+                dragging = false;
 
-        // Ensure video plays
-        const heroVideo = document.querySelector('.hero-video');
-        if (heroVideo) {
-            heroVideo.play().catch(e => console.log('Video autoplay prevented'));
+                var dx = e.clientX - startX;
+                var velocity = 0;
+
+                if (samples.length > 1) {
+                    var first = samples[0];
+                    var last = samples[samples.length - 1];
+                    var dt = last.t - first.t;
+                    if (dt > 0) velocity = ((last.x - first.x) / dt) * 1000;
+                }
+
+                if (track) {
+                    track.style.transition = 'transform 420ms cubic-bezier(0.22, 1, 0.36, 1)';
+                    track.style.transform = 'translate3d(0, 0, 0)';
+                }
+
+                var projected = dx + projectMomentum(velocity);
+
+                if (projected < -90) go(index + 1);
+                else if (projected > 90) go(index - 1);
+                else resume();
+            }
+
+            storyStage.addEventListener('pointerup', endDrag);
+            storyStage.addEventListener('pointercancel', function () {
+                dragging = false;
+                if (track) {
+                    track.style.transition = 'transform 420ms cubic-bezier(0.22, 1, 0.36, 1)';
+                    track.style.transform = 'translate3d(0, 0, 0)';
+                }
+                resume();
+            });
+
+            render(0);
+            schedule();
         }
+    })();
     </script>
 </body>
 </html>
