@@ -1981,6 +1981,156 @@
         .form-status[data-state="error"] { color: #FF8A8A; }
         .form-status[data-state="ok"] { color: var(--ink); }
 
+        /* Terms link inside the consent label -------------------------- */
+        .terms-link {
+            font: inherit;
+            font-size: inherit;
+            color: var(--ink);
+            background: none;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-color: rgba(46, 91, 255, 0.7);
+            transition: color var(--dur-fast) var(--ease-sharp);
+        }
+
+        .terms-link:hover { color: var(--accent); }
+        .terms-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+        /* Terms sheet -------------------------------------------------- */
+        .terms-scrim {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: grid;
+            place-items: center;
+            padding: clamp(0.75rem, 3vw, 2rem);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity var(--dur-base) var(--ease-smooth);
+        }
+
+        .terms-scrim[hidden] { display: none; }
+        .terms-scrim.is-open { opacity: 1; }
+
+        .terms-sheet {
+            width: min(720px, 100%);
+            max-height: min(82vh, 900px);
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--r-lg);
+            background: #101013;
+            border: 1px solid var(--hairline-strong);
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            /* Materialise: scale + fade together, not a flat opacity fade */
+            transform: translate3d(0, 12px, 0) scale(0.98);
+            opacity: 0;
+            transition: transform var(--dur-base) var(--ease-smooth),
+                        opacity var(--dur-base) var(--ease-smooth);
+        }
+
+        .terms-scrim.is-open .terms-sheet { transform: none; opacity: 1; }
+
+        .terms-sheet-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: clamp(1.25rem, 3vw, 1.9rem);
+            border-bottom: 1px solid var(--hairline);
+        }
+
+        .terms-sheet-head .eyebrow { margin-bottom: 0.5rem; }
+
+        .terms-sheet-head h2 {
+            font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+            color: var(--ink);
+        }
+
+        .terms-close {
+            flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            border: 1px solid var(--hairline);
+            background: var(--mat-regular);
+            color: var(--ink-2);
+            cursor: pointer;
+            transition: background var(--dur-fast) var(--ease-sharp),
+                        color var(--dur-fast) var(--ease-sharp),
+                        transform var(--dur-fast) var(--ease-sharp);
+        }
+
+        .terms-close:hover { background: var(--mat-thick); color: var(--ink); }
+        .terms-close:active { transform: scale(0.94); }
+        .terms-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .terms-close svg { width: 17px; height: 17px; }
+
+        .terms-body {
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding: clamp(1.25rem, 3vw, 1.9rem);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .terms-body:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+
+        .terms-body h3 {
+            font-size: 0.96rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin: 1.6rem 0 0.5rem;
+        }
+
+        .terms-body p {
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 1.65;
+            color: var(--ink-2);
+        }
+
+        .terms-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
+        .terms-intro {
+            padding: 0.95rem 1.1rem;
+            border-radius: var(--r-sm);
+            background: var(--mat-thin);
+            border: 1px solid var(--hairline);
+        }
+
+        .terms-contact {
+            margin-top: 1.9rem;
+            padding-top: 1.1rem;
+            border-top: 1px solid var(--hairline);
+            font-size: 0.85rem !important;
+        }
+
+        .terms-sheet-foot {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.7rem;
+            padding: clamp(1rem, 2.4vw, 1.4rem) clamp(1.25rem, 3vw, 1.9rem);
+            border-top: 1px solid var(--hairline);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        @media (max-width: 520px) {
+            .terms-sheet-foot { justify-content: stretch; }
+            .terms-sheet-foot .pill-btn { flex: 1; justify-content: center; }
+        }
+
         /* Upcoming / film card */
         .upcoming-projects { padding-bottom: clamp(5rem, 10vh, 8rem); }
 
@@ -2574,7 +2724,8 @@
                         <input type="checkbox" id="pf-terms" name="terms" required aria-required="true">
                         <label for="pf-terms">
                             I have read and agree to the
-                            <a href="https://www.sonypicturesnetworks.com/storyteller/" target="_blank" rel="noopener noreferrer">terms and conditions</a>
+                            <button type="button" class="terms-link" id="termsOpen"
+                                    aria-haspopup="dialog">terms and conditions</button>
                             for story submissions.
                         </label>
                     </div>
@@ -2643,6 +2794,107 @@
             </div>
         </div>
     </section>
+
+    <!-- Submission Terms Dialog -->
+    <div class="terms-scrim" id="termsScrim" hidden>
+        <div class="terms-sheet" role="dialog" aria-modal="true" aria-labelledby="termsTitle" id="termsSheet">
+            <header class="terms-sheet-head">
+                <div>
+                    <span class="eyebrow">Story Submissions</span>
+                    <h2 id="termsTitle">Terms &amp; Conditions</h2>
+                </div>
+                <button type="button" class="terms-close" id="termsClose" aria-label="Close terms and conditions">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </header>
+
+            <div class="terms-body" tabindex="0">
+                <p class="terms-intro">
+                    These terms govern any story, script, synopsis, or other material you submit to
+                    Spherecho Productions Pvt. Ltd. ("Spherecho") through this website. By ticking the
+                    consent box and sending your submission, you accept them in full. If you do not
+                    accept them, please do not submit.
+                </p>
+
+                <h3>1. Who may submit</h3>
+                <p>You must be at least 18 years old and legally able to enter into a contract. If you
+                are submitting on behalf of a company or a group of writers, you confirm you are
+                authorised to do so and to accept these terms for everyone involved.</p>
+
+                <h3>2. Your work must be your own</h3>
+                <p>You confirm that the material you submit is original to you, that you own it or have
+                written permission to submit it, and that it does not infringe anyone's copyright,
+                trademark, privacy, publicity, or other rights. You confirm it is not defamatory and is
+                not subject to any existing option, assignment, or exclusive agreement with a third
+                party. You agree to indemnify Spherecho against any claim arising from a breach of this
+                clause.</p>
+
+                <h3>3. Submissions are not confidential</h3>
+                <p>Please do not send anything you consider secret. Spherecho receives a large volume of
+                material and cannot treat submissions as confidential or hold them in trust. No
+                confidential relationship, partnership, agency, employment, or joint venture is created
+                by your submission or by our reading of it.</p>
+
+                <h3>4. Similar and independently developed material</h3>
+                <p>Spherecho develops and receives many projects, and ideas, themes, premises, settings,
+                and historical subjects are not protectable on their own. You accept that Spherecho may
+                already be developing, or may in future independently develop or acquire, material that
+                is similar or identical to yours. You agree that Spherecho has no liability to you in
+                that event, and that nothing in these terms limits its right to do so.</p>
+
+                <h3>5. No obligation, and no payment unless separately agreed</h3>
+                <p>Spherecho is under no obligation to read, respond to, evaluate, return, credit, or
+                use your submission, and may decline it without giving reasons. Submitting material
+                creates no entitlement to payment, credit, or employment. Compensation and rights are
+                only ever agreed in a separate written agreement signed by an authorised
+                representative of Spherecho. Nothing on this page is an offer to acquire your work.</p>
+
+                <h3>6. Limited permission to evaluate</h3>
+                <p>You grant Spherecho a non-exclusive, royalty-free permission to read, copy, store,
+                and internally circulate your submission for the sole purpose of evaluating it. You keep
+                ownership of your work. This permission does not let Spherecho produce, distribute, or
+                exploit your material — that requires a separate signed agreement under clause 5.</p>
+
+                <h3>7. Materials are not returned</h3>
+                <p>Submissions are not returned, and Spherecho is not responsible for material that is
+                lost, delayed, corrupted, or damaged. Please keep your own copy of everything you send.
+                Spherecho may delete submissions at any time.</p>
+
+                <h3>8. Your personal information</h3>
+                <p>The name, phone number, and email address you provide are used to identify your
+                submission and to contact you about it. Spherecho does not sell your details or use them
+                for unrelated marketing. Details are kept only as long as needed to evaluate and
+                administer submissions and to meet legal obligations. To ask what is held about you or
+                to request deletion, write to
+                <a href="mailto:partners@spherechoproductions.com">partners@spherechoproductions.com</a>.</p>
+
+                <h3>9. What to send</h3>
+                <p>Send a short synopsis through this form rather than a full screenplay. Do not include
+                material you are not authorised to share. Spherecho may decline any submission that is
+                incomplete, unlawful, offensive, or does not follow these terms.</p>
+
+                <h3>10. Changes to these terms</h3>
+                <p>Spherecho may update these terms at any time. The version shown on this page when you
+                submit is the version that applies to your submission.</p>
+
+                <h3>11. Governing law</h3>
+                <p>These terms are governed by the laws of India, and the courts at New Delhi have
+                exclusive jurisdiction over any dispute arising from them or from your submission.</p>
+
+                <p class="terms-contact">
+                    Questions about these terms:
+                    <a href="mailto:partners@spherechoproductions.com">partners@spherechoproductions.com</a>
+                </p>
+            </div>
+
+            <footer class="terms-sheet-foot">
+                <button type="button" class="pill-btn pill-btn--ghost" id="termsDismiss">Close</button>
+                <button type="button" class="pill-btn pill-btn--primary" id="termsAccept">Accept &amp; tick the box</button>
+            </footer>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -3064,6 +3316,98 @@
                     status.textContent = 'Your email app should now open with the pitch ready to send. ' +
                         'If nothing happened, email ' + RECIPIENT + ' directly.';
                 }
+            });
+        }
+
+        /* ---------------------------------------------------------
+           Terms sheet — focus trapped, Escape to close, scroll locked
+           --------------------------------------------------------- */
+        var termsScrim = document.getElementById('termsScrim');
+
+        if (termsScrim) {
+            var termsSheet = document.getElementById('termsSheet');
+            var termsOpenBtn = document.getElementById('termsOpen');
+            var termsBody = termsScrim.querySelector('.terms-body');
+            var lastFocused = null;
+            var scrollLock = '';
+
+            function focusables() {
+                return Array.prototype.slice.call(termsSheet.querySelectorAll(
+                    'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+                )).filter(function (el) { return el.offsetParent !== null; });
+            }
+
+            function onTermsKey(e) {
+                if (e.key === 'Escape') { e.preventDefault(); closeTerms(); return; }
+                if (e.key !== 'Tab') return;
+
+                var list = focusables();
+                if (!list.length) return;
+                var first = list[0];
+                var last = list[list.length - 1];
+
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault(); last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault(); first.focus();
+                }
+            }
+
+            function openTerms() {
+                lastFocused = document.activeElement;
+                termsScrim.hidden = false;
+                /* next frame so the transition runs from the closed state */
+                requestAnimationFrame(function () { termsScrim.classList.add('is-open'); });
+
+                scrollLock = document.body.style.overflow;
+                document.body.style.overflow = 'hidden';
+
+                document.addEventListener('keydown', onTermsKey);
+                if (termsBody) { termsBody.scrollTop = 0; termsBody.focus(); }
+            }
+
+            function closeTerms() {
+                termsScrim.classList.remove('is-open');
+                document.removeEventListener('keydown', onTermsKey);
+                document.body.style.overflow = scrollLock;
+
+                var done = function () { termsScrim.hidden = true; };
+                if (reduceMotion.matches) done();
+                else setTimeout(done, 380);
+
+                if (lastFocused && lastFocused.focus) lastFocused.focus();
+            }
+
+            if (termsOpenBtn) {
+                termsOpenBtn.addEventListener('click', function (e) {
+                    /* The trigger sits inside the checkbox's <label>; without
+                       this the click would also toggle the consent box. */
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openTerms();
+                });
+            }
+
+            ['termsClose', 'termsDismiss'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.addEventListener('click', closeTerms);
+            });
+
+            var acceptBtn = document.getElementById('termsAccept');
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', function () {
+                    var box = document.getElementById('pf-terms');
+                    if (box) {
+                        box.checked = true;
+                        box.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                    closeTerms();
+                });
+            }
+
+            /* Click the scrim itself, not the sheet, to dismiss */
+            termsScrim.addEventListener('click', function (e) {
+                if (e.target === termsScrim) closeTerms();
             });
         }
 
