@@ -1797,6 +1797,190 @@
 
         .social-icon:active { transform: scale(0.94) !important; }
 
+        /* Pitch form ---------------------------------------------------- */
+        .pitch-form {
+            text-align: left;
+            margin-top: clamp(2rem, 4vw, 2.75rem);
+            padding-top: clamp(2rem, 4vw, 2.75rem);
+            border-top: 1px solid var(--hairline);
+        }
+
+        .pitch-form-head {
+            text-align: center;
+            margin-bottom: clamp(1.5rem, 3vw, 2rem);
+        }
+
+        .pitch-form-head h3 {
+            font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+        }
+
+        .pitch-form-head p {
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.55;
+            color: var(--ink-2);
+            max-width: 44ch;
+            margin-inline: auto;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+            gap: 1rem;
+        }
+
+        .field { display: flex; flex-direction: column; gap: 0.45rem; }
+        .field--wide { grid-column: 1 / -1; }
+
+        .field label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+        }
+
+        .field .req { color: var(--accent); }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            font: inherit;
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--hairline);
+            border-radius: var(--r-sm);
+            padding: 0.8rem 1rem;
+            transition: border-color var(--dur-fast) var(--ease-sharp),
+                        background var(--dur-fast) var(--ease-sharp),
+                        box-shadow var(--dur-fast) var(--ease-sharp);
+        }
+
+        .field textarea { resize: vertical; min-height: 128px; line-height: 1.55; }
+
+        .field input::placeholder,
+        .field textarea::placeholder { color: rgba(245, 245, 247, 0.32); }
+
+        .field input:hover,
+        .field textarea:hover { border-color: var(--hairline-strong); }
+
+        .field input:focus,
+        .field textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .field input[aria-invalid="true"],
+        .field textarea[aria-invalid="true"] {
+            border-color: #FF5A5A;
+            box-shadow: 0 0 0 3px rgba(255, 90, 90, 0.16);
+        }
+
+        .field-error {
+            font-size: 0.78rem;
+            color: #FF8A8A;
+            min-height: 0;
+        }
+
+        /* Consent row */
+        .consent {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            margin-top: 1.35rem;
+        }
+
+        .consent input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            margin-top: 1px;
+            border-radius: 6px;
+            border: 1px solid var(--hairline-strong);
+            background: rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            display: grid;
+            place-content: center;
+            transition: background var(--dur-fast) var(--ease-sharp),
+                        border-color var(--dur-fast) var(--ease-sharp);
+        }
+
+        .consent input[type="checkbox"]::after {
+            content: '';
+            width: 10px;
+            height: 6px;
+            border-left: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            transform: rotate(-45deg) scale(0.6);
+            opacity: 0;
+            transition: opacity var(--dur-fast) var(--ease-sharp),
+                        transform var(--dur-fast) var(--ease-bounce);
+        }
+
+        .consent input[type="checkbox"]:checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .consent input[type="checkbox"]:checked::after { opacity: 1; transform: rotate(-45deg) scale(1); }
+        .consent input[type="checkbox"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+        .consent label {
+            font-size: 0.88rem;
+            font-weight: 300;
+            line-height: 1.5;
+            color: var(--ink-2);
+            cursor: pointer;
+        }
+
+        .consent a {
+            color: var(--ink);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-color: rgba(46, 91, 255, 0.7);
+            transition: color var(--dur-fast) var(--ease-sharp);
+        }
+
+        .consent a:hover { color: var(--accent); }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.6rem;
+        }
+
+        .form-note {
+            font-size: 0.8rem;
+            font-weight: 300;
+            line-height: 1.5;
+            color: var(--ink-3);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-status {
+            margin-top: 1rem;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: var(--ink-2);
+        }
+
+        .form-status[data-state="error"] { color: #FF8A8A; }
+        .form-status[data-state="ok"] { color: var(--ink); }
+
         /* Upcoming / film card */
         .upcoming-projects { padding-bottom: clamp(5rem, 10vh, 8rem); }
 
@@ -2123,7 +2307,7 @@
             <div class="team-head fade-up">
                 <div>
                     <span class="eyebrow">Leadership &amp; Crew</span>
-                    <h2 class="headline grad-ink">The team behind Dial 1975</h2>
+                    <h2 class="headline grad-ink">The Team Behind DIAL 1975</h2>
                 </div>
                 <p class="lede">Founders who backed the story, and the craftspeople who put it on screen.</p>
             </div>
@@ -2172,24 +2356,6 @@
                                 IMDb
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="person fade-up">
-                    <div class="person-media">
-                        <span class="person-badge">Direction</span>
-                        <img src="TAB-128.jpg" alt="Taher Ali Baig" loading="lazy">
-                    </div>
-                    <div class="person-body">
-                        <h3>Taher Ali Baig</h3>
-                        <span class="person-role">Theatre Director, Playwright &amp; Filmmaker</span>
-                        <p>South India's theatre powerhouse — Blithe Spirit, Ali Baba 40 Chor, Matilda and SuperLosers.</p>
-                        <p>Award-winning filmmaker with Fitrat, and ad director for Kiana Skincare and Volvo Cars.</p>
-                        <div class="person-links">
-                            <a class="chip" href="https://en.wikipedia.org/wiki/Taher_Ali_Baig" target="_blank" rel="noopener">Wikipedia</a>
-                            <a class="chip" href="https://www.instagram.com/taheralibaig/" target="_blank" rel="noopener">Instagram</a>
-                            <a class="chip" href="https://www.facebook.com/taheralibaigofficial" target="_blank" rel="noopener">Facebook</a>
                         </div>
                     </div>
                 </article>
@@ -2367,6 +2533,66 @@
                         partners@spherechoproductions.com
                     </a>
                 </div>
+                <form class="pitch-form" id="pitchForm" novalidate>
+                    <div class="pitch-form-head">
+                        <h3>Pitch us your story</h3>
+                        <p>Tell us who you are and what you want to make. We read everything that comes in.</p>
+                    </div>
+
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="pf-name">Name <span class="req" aria-hidden="true">*</span></label>
+                            <input id="pf-name" name="name" type="text" autocomplete="name"
+                                   placeholder="Your full name" required aria-required="true">
+                            <span class="field-error" id="err-name" role="alert"></span>
+                        </div>
+
+                        <div class="field">
+                            <label for="pf-phone">Number <span class="req" aria-hidden="true">*</span></label>
+                            <input id="pf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"
+                                   placeholder="+91 00000 00000" required aria-required="true">
+                            <span class="field-error" id="err-phone" role="alert"></span>
+                        </div>
+
+                        <div class="field field--wide">
+                            <label for="pf-email">Email <span class="req" aria-hidden="true">*</span></label>
+                            <input id="pf-email" name="email" type="email" autocomplete="email"
+                                   placeholder="you@example.com" required aria-required="true">
+                            <span class="field-error" id="err-email" role="alert"></span>
+                        </div>
+
+                        <div class="field field--wide">
+                            <label for="pf-synopsis">Synopsis <span class="req" aria-hidden="true">*</span></label>
+                            <textarea id="pf-synopsis" name="synopsis" rows="6"
+                                      placeholder="A short summary of your story — premise, world, and why it matters."
+                                      required aria-required="true"></textarea>
+                            <span class="field-error" id="err-synopsis" role="alert"></span>
+                        </div>
+                    </div>
+
+                    <div class="consent">
+                        <input type="checkbox" id="pf-terms" name="terms" required aria-required="true">
+                        <label for="pf-terms">
+                            I have read and agree to the
+                            <a href="https://www.sonypicturesnetworks.com/storyteller/" target="_blank" rel="noopener noreferrer">terms and conditions</a>
+                            for story submissions.
+                        </label>
+                    </div>
+                    <span class="field-error" id="err-terms" role="alert"></span>
+
+                    <div class="form-actions">
+                        <button type="submit" class="pill-btn pill-btn--primary" id="pitchSubmit">
+                            Send your pitch
+                        </button>
+                        <p class="form-note">
+                            Opens your email app with the pitch addressed to
+                            partners@spherechoproductions.com. Press send there to submit.
+                        </p>
+                    </div>
+
+                    <p class="form-status" id="pitchStatus" role="status" aria-live="polite"></p>
+                </form>
+
                 <div class="contact-social">
                     <a href="https://www.instagram.com/spherecho?igsh=MXB6Z2J1enhyOWh2eA==" target="_blank" aria-label="Instagram" class="social-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -2720,6 +2946,124 @@
             /* Don't keep a hidden tab playing */
             document.addEventListener('visibilitychange', function () {
                 if (document.hidden && frame) command('pauseVideo');
+            });
+        }
+
+        /* ---------------------------------------------------------
+           Pitch form
+
+           This is a static page with no backend, so submission composes
+           a pre-filled message and hands it to the visitor's mail client
+           addressed to RECIPIENT. Nothing is transmitted from this page
+           and no data touches a third party.
+
+           To submit in the background instead, point a form service
+           (Formspree, FormSubmit, a serverless function) at ENDPOINT
+           below and post `data` to it in place of the mailto handoff.
+           --------------------------------------------------------- */
+        var pitchForm = document.getElementById('pitchForm');
+
+        if (pitchForm) {
+            var RECIPIENT = 'partners@spherechoproductions.com';
+            var status = document.getElementById('pitchStatus');
+
+            var fields = [
+                { id: 'pf-name',     err: 'err-name',     label: 'Name',     msg: 'Please tell us your name.' },
+                { id: 'pf-phone',    err: 'err-phone',    label: 'Number',   msg: 'Please add a contact number.' },
+                { id: 'pf-email',    err: 'err-email',    label: 'Email',    msg: 'Please add your email address.' },
+                { id: 'pf-synopsis', err: 'err-synopsis', label: 'Synopsis', msg: 'Please include a short synopsis.' }
+            ];
+
+            var terms = document.getElementById('pf-terms');
+            var termsErr = document.getElementById('err-terms');
+
+            function setError(input, node, message) {
+                if (node) node.textContent = message || '';
+                if (input) {
+                    if (message) input.setAttribute('aria-invalid', 'true');
+                    else input.removeAttribute('aria-invalid');
+                }
+            }
+
+            /* Clear a field's error as soon as the visitor starts fixing it */
+            fields.forEach(function (f) {
+                var input = document.getElementById(f.id);
+                if (!input) return;
+                input.addEventListener('input', function () {
+                    setError(input, document.getElementById(f.err), '');
+                });
+            });
+
+            if (terms) {
+                terms.addEventListener('change', function () {
+                    if (terms.checked) setError(null, termsErr, '');
+                });
+            }
+
+            pitchForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                var values = {};
+                var firstBad = null;
+
+                fields.forEach(function (f) {
+                    var input = document.getElementById(f.id);
+                    if (!input) return;
+                    var value = input.value.trim();
+                    values[f.label] = value;
+
+                    var message = '';
+                    if (!value) {
+                        message = f.msg;
+                    } else if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) {
+                        message = 'That email address does not look right.';
+                    } else if (input.type === 'tel' && value.replace(/[^0-9]/g, '').length < 7) {
+                        message = 'That number looks too short.';
+                    }
+
+                    setError(input, document.getElementById(f.err), message);
+                    if (message && !firstBad) firstBad = input;
+                });
+
+                if (terms && !terms.checked) {
+                    setError(null, termsErr, 'Please accept the terms and conditions to continue.');
+                    if (!firstBad) firstBad = terms;
+                } else {
+                    setError(null, termsErr, '');
+                }
+
+                if (firstBad) {
+                    if (status) {
+                        status.setAttribute('data-state', 'error');
+                        status.textContent = 'Please check the highlighted fields.';
+                    }
+                    firstBad.focus();
+                    return;
+                }
+
+                var subject = 'Story submission — ' + values.Name;
+                var body = [
+                    'Name: ' + values.Name,
+                    'Number: ' + values.Number,
+                    'Email: ' + values.Email,
+                    '',
+                    'Synopsis:',
+                    values.Synopsis,
+                    '',
+                    '---',
+                    'Terms and conditions accepted.',
+                    'Sent from spherechoproductions.com'
+                ].join('\n');
+
+                window.location.href = 'mailto:' + RECIPIENT +
+                    '?subject=' + encodeURIComponent(subject) +
+                    '&body=' + encodeURIComponent(body);
+
+                if (status) {
+                    status.setAttribute('data-state', 'ok');
+                    status.textContent = 'Your email app should now open with the pitch ready to send. ' +
+                        'If nothing happened, email ' + RECIPIENT + ' directly.';
+                }
             });
         }
 
