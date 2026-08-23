@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="portal/portal.css">
     <style>
         :root {
             --deep-charcoal: #0D0D0D;
@@ -3048,6 +3049,15 @@
                     </a>
                 </div>
             </div>
+            <div class="spx-footer-login">
+                <button type="button" class="spx-login-tab" id="spxLoginTab" aria-haspopup="dialog">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="4" y="10" width="16" height="10" rx="2"/>
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                    </svg>
+                    Internal &amp; Partner Login
+                </button>
+            </div>
         </div>
     </footer>
 
@@ -3642,5 +3652,33 @@
         }
     })();
     </script>
+    <!-- Internal & partner portal ------------------------------------------ -->
+    <div class="spx-scrim" id="spxPortal" hidden>
+        <div class="spx-sheet" role="dialog" aria-modal="true" aria-labelledby="spxPortalTitle" data-width="narrow">
+            <header class="spx-head">
+                <div class="spx-head-titles">
+                    <p class="spx-eyebrow">Spherecho</p>
+                    <h2 id="spxPortalTitle">Portal</h2>
+                </div>
+                <div class="spx-head-actions">
+                    <p class="spx-whoami" hidden></p>
+                    <button type="button" class="spx-btn spx-btn--ghost spx-btn--small" data-action="logout" hidden>Sign out</button>
+                    <button type="button" class="spx-close" aria-label="Close the portal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                            <path d="M5 5l14 14M19 5L5 19"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+            <div class="spx-tabs" role="tablist" hidden></div>
+            <div class="spx-body" tabindex="-1"></div>
+            <input type="file" id="spxFileInput" hidden>
+        </div>
+    </div>
+
+    <script src="portal/checklist.js"></script>
+    <script src="portal/store.js"></script>
+    <script src="portal/verify.js"></script>
+    <script src="portal/portal.js"></script>
 </body>
 </html>
