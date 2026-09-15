@@ -1,0 +1,279 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Spherecho internal & partner portal — Cognito for identity, DynamoDB for
+  records, a private S3 bucket for uploaded documents, and one Lambda behind an
+  HTTP API that also runs the document verification.
+
+Parameters:
+  AllowedOrigins:
+    Type: String
+    Description: >
+      Comma-separated site origins allowed to call the API. Include the Vercel
+      preview and the production domain, e.g.
+      https://spherechoproductions.com,https://sphereco-production-git-....vercel.app
+    Default: http://localhost:8090
+  RetentionDays:
+    Type: Number
+    Description: CloudWatch log retention for the API Lambda.
+    Default: 30
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 30
+    MemorySize: 1024
+    Architectures: [arm64]
+
+Resources:
+
+  # ---------------------------------------------------------------------------
+  # Identity. Approving a request calls AdminCreateUser with a temporary
+  # password, which leaves the account in FORCE_CHANGE_PASSWORD — Cognito itself
+  # refuses to issue tokens until the holder sets their own password.
+  # ---------------------------------------------------------------------------
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub '${AWS::StackName}-users'
+      # Nobody can sign themselves up. Accounts exist only because an
+      # administrator approved a request.
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+      UsernameAttributes: []
+      AutoVerifiedAttributes: [email]
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 12
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          # Deliberately off: issued passwords are 16 characters from a 57-glyph
+          # alphabet (~93 bits) and have to survive being read aloud. Cognito
+          # does not count "-" as a symbol, so requiring one would break them.
+          RequireSymbols: false
+          TemporaryPasswordValidityDays: 7
+      UserAttributeUpdateSettings:
+        AttributesRequireVerificationBeforeUpdate: [email]
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+        - Name: name
+          AttributeDataType: String
+          Required: false
+          Mutable: true
+      UserPoolAddOns:
+        AdvancedSecurityMode: AUDIT
+      DeletionProtection: ACTIVE
+
+  AdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: admin
+      Description: Approves access requests and manages accounts.
+      Precedence: 0
+      UserPoolId: !Ref UserPool
+
+  InternalGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: internal
+      Description: Spherecho staff reviewing partner submissions.
+      Precedence: 10
+      UserPoolId: !Ref UserPool
+
+  PartnerGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: partner
+      Description: Sellers and producers submitting a film and its documents.
+      Precedence: 20
+      UserPoolId: !Ref UserPool
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub '${AWS::StackName}-portal'
+      UserPoolId: !Ref UserPool
+      # No client secret: the flow runs server-side in our Lambda, and a secret
+      # in a static site would not be a secret.
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      PreventUserExistenceErrors: ENABLED
+      AccessTokenValidity: 8
+      IdTokenValidity: 8
+      RefreshTokenValidity: 1
+      TokenValidityUnits:
+        AccessToken: hours
+        IdToken: hours
+        RefreshToken: days
+
+  # ---------------------------------------------------------------------------
+  # Records. One table; every list the portal performs is a Query against a
+  # known partition key, so nothing scans.
+  # ---------------------------------------------------------------------------
+  Table:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      TableName: !Sub '${AWS::StackName}-portal'
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+
+  # ---------------------------------------------------------------------------
+  # Uploaded documents. Private, encrypted, versioned. Reached only through
+  # presigned URLs the API issues to an authenticated caller.
+  # ---------------------------------------------------------------------------
+  Documents:
+    Type: AWS::S3::Bucket
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-documents-${AWS::AccountId}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: [PUT, GET]
+            AllowedOrigins: !Split [',', !Ref AllowedOrigins]
+            ExposedHeaders: [ETag]
+            MaxAge: 3000
+      LifecycleConfiguration:
+        Rules:
+          - Id: AbandonedUploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+          - Id: ExpireOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 90
+
+  DocumentsTlsOnly:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref Documents
+      PolicyDocument:
+        Statement:
+          - Sid: DenyPlaintextTraffic
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !GetAtt Documents.Arn
+              - !Sub '${Documents.Arn}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': false
+
+  # ---------------------------------------------------------------------------
+  # The API
+  # ---------------------------------------------------------------------------
+  Api:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: v1
+      CorsConfiguration:
+        AllowOrigins: !Split [',', !Ref AllowedOrigins]
+        AllowHeaders: [authorization, content-type]
+        AllowMethods: [GET, POST, PUT, DELETE, OPTIONS]
+        MaxAge: 86400
+      Throttle:
+        BurstLimit: 50
+        RateLimit: 25
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-api'
+      CodeUri: src/
+      Handler: index.handler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          BUCKET_NAME: !Ref Documents
+          USER_POOL_ID: !Ref UserPool
+          USER_POOL_CLIENT_ID: !Ref UserPoolClient
+          ALLOWED_ORIGINS: !Ref AllowedOrigins
+          NODE_OPTIONS: '--enable-source-maps'
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - S3CrudPolicy:
+            BucketName: !Sub '${AWS::StackName}-documents-${AWS::AccountId}'
+        - Statement:
+            - Effect: Allow
+              Action:
+                - cognito-idp:AdminCreateUser
+                - cognito-idp:AdminSetUserPassword
+                - cognito-idp:AdminAddUserToGroup
+                - cognito-idp:AdminInitiateAuth
+                - cognito-idp:AdminRespondToAuthChallenge
+                - cognito-idp:AdminEnableUser
+                - cognito-idp:AdminDisableUser
+                - cognito-idp:AdminGetUser
+                - cognito-idp:ListUsers
+              Resource: !GetAtt UserPool.Arn
+      Events:
+        Any:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref Api
+            Path: /{proxy+}
+            Method: ANY
+        Root:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref Api
+            Path: /
+            Method: ANY
+
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-api'
+      RetentionInDays: !Ref RetentionDays
+
+Outputs:
+  ApiUrl:
+    Description: Put this in portal/config.js as apiBase.
+    Value: !Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/v1'
+  UserPoolId:
+    Description: Pass to scripts/seed-admin.js.
+    Value: !Ref UserPool
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+  TableName:
+    Value: !Ref Table
+  DocumentsBucket:
+    Value: !Ref Documents

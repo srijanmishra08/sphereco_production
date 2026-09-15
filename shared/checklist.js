@@ -12,10 +12,14 @@
    once templates arrive, `SPX.checklist.applyTemplate(docId, {...})` overlays
    stricter rules onto the same block without touching any other layer.
    ========================================================================== */
-(function (global) {
+(function (root, factory) {
+    /* One copy of the schema, two runtimes: the browser renders the checklist
+       from it, and the verification Lambda reads the same `expect` blocks. */
+    var api = factory();
+    if (typeof module === 'object' && module.exports) module.exports = api;
+    else { root.SPX = root.SPX || {}; root.SPX.checklist = api; }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
     'use strict';
-
-    var SPX = global.SPX = global.SPX || {};
 
     /* Accepted upload types, by shorthand used below. */
     var ACCEPT = {
@@ -492,7 +496,7 @@
         return true;
     }
 
-    SPX.checklist = {
+    return {
         sections: SECTIONS,
         closing: CLOSING,
         profileFields: PROFILE_FIELDS,
@@ -503,4 +507,4 @@
         requiredDocs: requiredDocs,
         applyTemplate: applyTemplate
     };
-})(window);
+});

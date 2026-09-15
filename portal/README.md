@@ -4,22 +4,24 @@ Opens from the **Internal & Partner Login** tab in the site footer, or by visiti
 
 | File | Does |
 | --- | --- |
-| `checklist.js` | The document requirements — sections 1–12, the closing checklist, and the partner profile form. Data only. |
-| `store.js` | Accounts, access requests, sessions, submissions, uploaded bytes. The only file that touches storage. |
-| `verify.js` | Reads an uploaded file and decides `verified` / `review` / `failed`. |
+| `config.js` | Where the API lives. Set `apiBase` to the stack's `ApiUrl`. |
+| `store.js` | The API client. The only file that talks to the backend. |
 | `portal.js` | The interface. |
 | `portal.css` | Styles, using the site's existing tokens. |
+| `../shared/checklist.js` | The document requirements — sections 1–12, the closing checklist, the profile form. Shared with the backend. |
+| `../shared/verify.js` | The verification engine. Runs in Lambda; the browser no longer loads it. |
+| `../backend/` | The AWS stack. See `backend/README.md`. |
 
 ## How access works
 
 There is no sign-up. The chain is deliberately one-way:
 
-1. **First run** — the portal has no accounts, so it asks for an administrator to be created. This is the only account that can come into existence on its own.
+1. **The administrator is seeded server-side**, once, by `backend/scripts/seed-admin.js` against the deployed stack. There is no endpoint and no screen that creates one — an earlier version offered a public "create the administrator" page, which meant whoever arrived first got it.
 2. **Someone requests access** from the login screen, choosing *partner* or *internal*.
-3. **The administrator approves**, which creates the account and generates a username and a 16-character password on the spot. The password is displayed **once** — it is stored only as a PBKDF2-SHA256 hash, so a lost password is reissued, never looked up.
-4. **First sign-in forces a password change.** The issued password stops working at that moment.
+3. **The administrator approves**, which creates the Cognito account and generates a username and a 16-character password on the spot. The password is displayed **once**; we never store it, so a lost password is reissued, never looked up.
+4. **First sign-in is challenged.** The issued password buys no session — Cognito holds the account in `FORCE_CHANGE_PASSWORD` and issues no token until the holder sets their own password.
 
-Accounts can be revoked, restored, or given a fresh password from the Accounts tab. Five failed sign-ins lock a username for five minutes.
+Accounts can be revoked, restored, or given a fresh password from the Accounts tab; revoking disables the Cognito user, so it takes effect on the next request rather than at the next sign-in. Repeated failed sign-ins are rate-limited by Cognito.
 
 ### The two non-admin roles
 
@@ -58,12 +60,18 @@ SPX.checklist.applyTemplate('cbfc.certificate', {
 
 Supported keys: `keywordsAll`, `keywordsAny`, `identifiers` + `identifiersMode`, `crossCheck`, `matchEntityName`, `matchFilmTitle`, `wantsSignature`, `wantsDate`, `wantsTerm`, `noDues`, `declaration`. Anything a template needs beyond these becomes a new check in `verify.js` and a new key here.
 
-## Before this handles real deal documents
+## Where things run now
 
-The portal runs entirely in the browser: accounts and submission metadata in `localStorage`, uploaded files in IndexedDB. That is what lets it ship on the current static site with no backend, and it is genuinely useful for walking a partner through the checklist — but it is **not a security boundary**, and it has consequences worth being explicit about:
+Accounts live in Cognito, records in DynamoDB, uploaded documents in a private,
+encrypted, versioned S3 bucket. The browser holds one thing: an access token in
+`sessionStorage`, which dies with the tab. Nothing is written to `localStorage`.
 
-- Anyone who opens devtools can read the store. Password hashing keeps passwords out of it; it does not make the data private.
-- Data lives in one browser on one machine. A partner uploading from their laptop is invisible to a reviewer on theirs, and clearing site data erases everything.
-- Uploaded documents never leave the partner's machine — good for confidentiality, useless for actually receiving the documents.
+Uploads go straight to S3 through a presigned `PUT` scoped to a single key, so a
+25 MB scan never passes through the API. The verdict is produced by the service
+afterwards, reading the object — the browser cannot forge one.
 
-Moving this to real infrastructure means replacing the body of `store.js` with API calls and running the same verification server-side (the checks in `verify.js` port directly to Node). The rest of the portal is written against `SPX.store`'s interface and would not change.
+Every authorisation decision is made server-side from the token's group claim.
+The `role` the browser keeps only chooses which tabs to draw.
+
+See `backend/README.md` for deploying, running locally, and what is still to do
+(email delivery of credentials, refresh tokens).

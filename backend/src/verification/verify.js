@@ -1,3 +1,4 @@
+/* GENERATED COPY of /shared/verify.js — edit the original, then run npm run sync-shared. */
 /* =============================================================================
    Spherecho Portal — automatic document verification
    -----------------------------------------------------------------------------
@@ -19,13 +20,32 @@
    layer is the common case — it says so and returns `review` rather than
    guessing. Nothing here replaces a lawyer reading the paper.
    ========================================================================== */
-(function (global) {
+(function (root, factory) {
+    /* Isomorphic: the same engine decides a verdict in the browser and in the
+       verification Lambda. Everything it needs — DecompressionStream, Blob,
+       Response, crypto.subtle — is a platform global in both. */
+    var api = factory(root);
+    if (typeof module === 'object' && module.exports) module.exports = api;
+    else { root.SPX = root.SPX || {}; root.SPX.verify = api; }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (global) {
     'use strict';
 
-    var SPX = global.SPX = global.SPX || {};
+    var checklist = (typeof module === 'object' && module.exports)
+        ? require('./checklist.js')
+        : (global.SPX && global.SPX.checklist);
 
     var MAX_BYTES = 25 * 1024 * 1024;
     var MIN_BYTES = 512;
+
+    function toHex(buf) {
+        return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+            return ('0' + b.toString(16)).slice(-2);
+        }).join('');
+    }
+
+    async function sha256Hex(arrayBuffer) {
+        return toHex(await global.crypto.subtle.digest('SHA-256', arrayBuffer));
+    }
 
     /* -------------------------------------------------------------------------
        Format detection from magic bytes — a .pdf that is really a .exe does not
@@ -388,15 +408,27 @@
      * @param {Object} context   { profile, knownHashes }
      * @returns {Promise<Object>} verification record
      */
-    async function verifyFile(file, doc, context) {
+    async function verifyFile(input, doc, context) {
         context = context || {};
         var profile = context.profile || {};
         var expect = (doc && doc.expect) || {};
         var checks = [];
         var evidence = {};
 
-        var buffer = await file.arrayBuffer();
+        /* Accepts a browser File/Blob or, in Lambda, { name, bytes } read from S3. */
+        var buffer, name;
+        if (input && typeof input.arrayBuffer === 'function') {
+            buffer = await input.arrayBuffer();
+            name = input.name || '';
+        } else {
+            var raw = input.bytes || input.body;
+            buffer = raw.buffer
+                ? raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength)
+                : raw;
+            name = input.name || '';
+        }
         var bytes = new Uint8Array(buffer);
+        var file = { name: name, size: bytes.length };
 
         /* 1 — the file arrived intact and is a plausible size ---------------- */
         if (!bytes.length) {
@@ -433,7 +465,7 @@
         }
 
         /* 3 — hash, then look for the same bytes already uploaded elsewhere -- */
-        var sha256 = await SPX.store.sha256Hex(buffer);
+        var sha256 = await sha256Hex(buffer);
         evidence.sha256 = sha256;
         var duplicate = (context.knownHashes || []).filter(function (k) { return k.sha256 === sha256; })[0];
         if (duplicate) {
@@ -625,7 +657,7 @@
     }
 
     function labelFor(docId) {
-        var d = SPX.checklist && SPX.checklist.get(docId);
+        var d = checklist && checklist.get(docId);
         return d ? d.ref + ' ' + d.label : docId;
     }
 
@@ -635,8 +667,9 @@
         return (n / 1024 / 1024).toFixed(1) + ' MB';
     }
 
-    SPX.verify = {
+    return {
         file: verifyFile,
+        sha256Hex: sha256Hex,
         detectFormat: detectFormat,
         extractText: extractText,
         gstinCheckDigit: gstinCheckDigit,
@@ -644,4 +677,4 @@
         formatBytes: formatBytes,
         MAX_BYTES: MAX_BYTES
     };
-})(window);
+});

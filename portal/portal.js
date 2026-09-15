@@ -1,18 +1,19 @@
 /* =============================================================================
    Spherecho Portal — interface
    -----------------------------------------------------------------------------
-   One overlay, four faces:
+   Four faces:
 
-     • bootstrap  — first run: the administrator sets their own password
      • login      — everyone signs in here; new people request access
+     • challenge  — first sign-in, replacing the password that was issued
      • admin      — approve requests (which mints credentials), manage accounts
      • internal   — the Spherecho team reviewing what partners have filed
-     • partner    — entity/film profile, then the document checklist with
-                    automatic verification on every upload
+     • partner    — entity/film profile, then the document checklist
 
-   Views render as HTML strings and wire up through one delegated click handler,
-   so a state change is always a re-render rather than a patch — with this much
-   conditional structure that is the version that stays correct.
+   Everything shown here comes from the API, and every rule that matters is
+   enforced there. The role below decides which tabs to draw, nothing more: a
+   partner who edits it in devtools gets a different-looking page and the same
+   403s. Views are async and a state change re-renders the whole panel, which
+   with this much conditional structure is the version that stays correct.
    ========================================================================== */
 (function (global) {
     'use strict';
@@ -20,19 +21,21 @@
     var SPX = global.SPX = global.SPX || {};
     var store = SPX.store;
     var checklist = SPX.checklist;
-    var verify = SPX.verify;
 
     var doc = global.document;
-    var scrim, sheet, head, tabsEl, bodyEl, titleEl, eyebrowEl, whoamiEl, fileInput;
+    var scrim, sheet, head, tabsEl, bodyEl, titleEl, eyebrowEl, whoamiEl, fileInput, headSignOut;
     var lastFocused = null;
     var scrollLock = '';
     var view = 'login';
     var activeTab = null;
-    var flash = null;            /* one-shot message shown at the top of a view */
-    var credential = null;       /* freshly minted credentials, shown once */
+    var flash = null;              /* one-shot message at the top of a view */
+    var credential = null;         /* freshly minted credentials, shown once */
+    var pendingChallenge = null;   /* { username, session } during first sign-in */
+    var openSubmissionId = null;
     var pendingDocId = null;
-    var busyDocs = {};           /* docId → status text while verifying */
-    var openSections = {};       /* section id → expanded, so a re-render does not collapse the page */
+    var busyDocs = {};             /* docId → stage text while uploading */
+    var openSections = {};
+    var renderToken = 0;
 
     /* -------------------------------------------------------------------------
        Helpers
@@ -50,14 +53,19 @@
                ' · ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
     }
 
+    function formatBytes(n) {
+        if (!n) return '0 B';
+        if (n < 1024) return n + ' B';
+        if (n < 1024 * 1024) return (n / 1024).toFixed(0) + ' KB';
+        return (n / 1024 / 1024).toFixed(1) + ' MB';
+    }
+
     function icon(name) {
         var paths = {
-            lock: '<rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
             close: '<path d="M5 5l14 14M19 5L5 19"/>',
             caret: '<path d="M6 9l6 6 6-6"/>',
             info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
-            plus: '<path d="M12 5v14M5 12h14"/>',
-            copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>'
+            plus: '<path d="M12 5v14M5 12h14"/>'
         };
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
                'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (paths[name] || '') + '</svg>';
@@ -140,36 +148,7 @@
     }
 
     /* -------------------------------------------------------------------------
-       Screen: administrator bootstrap
-       ---------------------------------------------------------------------- */
-    function viewBootstrap() {
-        return {
-            eyebrow: 'First run',
-            title: 'Set up the administrator',
-            width: 'narrow',
-            tabs: null,
-            html: renderFlash() + note(
-                'The administrator is the only account that can exist before anyone is approved. ' +
-                'Every other login — internal team or partner — is created from here, by approving a request.'
-            ) +
-            '<form class="spx-form" data-form="bootstrap" novalidate>' +
-                '<div class="spx-grid">' +
-                    field({ id: 'name', label: 'Your name', required: true, autocomplete: 'name' }) +
-                    field({ id: 'email', label: 'Work email', type: 'email', required: true, autocomplete: 'email' }) +
-                    field({ id: 'username', label: 'Username', required: true, placeholder: 'admin', autocomplete: 'username', hint: '4–32 characters: letters, numbers, dot, dash or underscore.' }) +
-                    field({ id: 'password', label: 'Password', type: 'password', required: true, autocomplete: 'new-password', hint: 'At least 12 characters.' }) +
-                    field({ id: 'confirm', label: 'Confirm password', type: 'password', required: true, autocomplete: 'new-password', wide: true }) +
-                '</div>' +
-                '<div class="spx-actions">' +
-                    '<button type="submit" class="spx-btn spx-btn--primary">Create administrator</button>' +
-                '</div>' +
-                '<p class="spx-status" role="status"></p>' +
-            '</form>'
-        };
-    }
-
-    /* -------------------------------------------------------------------------
-       Screen: login
+       Screens that need no data
        ---------------------------------------------------------------------- */
     function viewLogin() {
         return {
@@ -193,9 +172,6 @@
         };
     }
 
-    /* -------------------------------------------------------------------------
-       Screen: request access
-       ---------------------------------------------------------------------- */
     function viewRequest() {
         return {
             eyebrow: 'Access',
@@ -230,11 +206,10 @@
         };
     }
 
-    /* -------------------------------------------------------------------------
-       Screen: forced password change on first sign-in
-       ---------------------------------------------------------------------- */
-    function viewChangePassword() {
-        var session = store.session();
+    /* First sign-in. The issued password has not bought a session yet — the
+       identity provider holds a challenge open and issues no token until it is
+       answered, so this screen is not a formality the client could skip. */
+    function viewChallenge() {
         return {
             eyebrow: 'Security',
             title: 'Choose your own password',
@@ -244,16 +219,15 @@
                 'You signed in with the one-time password issued on approval. Replace it now — ' +
                 'the issued password stops working as soon as you do.'
             ) +
-            '<form class="spx-form" data-form="change-password" novalidate>' +
-                '<input type="hidden" name="username" value="' + esc(session.username) + '" autocomplete="username">' +
+            '<form class="spx-form" data-form="challenge" novalidate>' +
+                '<input type="hidden" name="username" value="' + esc(pendingChallenge.username) + '" autocomplete="username">' +
                 '<div class="spx-grid">' +
-                    field({ id: 'current', label: 'Issued password', type: 'password', required: true, autocomplete: 'current-password', wide: true }) +
-                    field({ id: 'next', label: 'New password', type: 'password', required: true, autocomplete: 'new-password', wide: true, hint: 'At least 12 characters.' }) +
+                    field({ id: 'next', label: 'New password', type: 'password', required: true, autocomplete: 'new-password', wide: true, hint: 'At least 12 characters, with upper and lower case letters and a number.' }) +
                     field({ id: 'confirm', label: 'Confirm new password', type: 'password', required: true, autocomplete: 'new-password', wide: true }) +
                 '</div>' +
                 '<div class="spx-actions">' +
                     '<button type="submit" class="spx-btn spx-btn--primary">Set password</button>' +
-                    '<button type="button" class="spx-btn spx-btn--ghost" data-action="logout">Sign out</button>' +
+                    '<button type="button" class="spx-btn spx-btn--ghost" data-action="cancel-challenge">Back</button>' +
                 '</div>' +
                 '<p class="spx-status" role="status"></p>' +
             '</form>'
@@ -261,7 +235,7 @@
     }
 
     /* -------------------------------------------------------------------------
-       Screen: administrator console
+       Admin console
        ---------------------------------------------------------------------- */
     function credentialCard() {
         if (!credential) return '';
@@ -283,8 +257,8 @@
         '</div>';
     }
 
-    function adminRequests() {
-        var requests = store.listRequests();
+    async function adminRequests() {
+        var requests = await store.listRequests();
         var pending = requests.filter(function (r) { return r.status === 'pending'; });
         var decided = requests.filter(function (r) { return r.status !== 'pending'; });
 
@@ -304,8 +278,8 @@
                     '</div>' +
                 '</div>' +
                 '<div class="spx-row-actions">' +
-                    '<button type="button" class="spx-btn spx-btn--primary spx-btn--small" data-action="approve" data-id="' + r.id + '">Approve &amp; issue login</button>' +
-                    '<button type="button" class="spx-btn spx-btn--danger spx-btn--small" data-action="reject" data-id="' + r.id + '">Decline</button>' +
+                    '<button type="button" class="spx-btn spx-btn--primary spx-btn--small" data-action="approve" data-id="' + esc(r.id) + '">Approve &amp; issue login</button>' +
+                    '<button type="button" class="spx-btn spx-btn--danger spx-btn--small" data-action="reject" data-id="' + esc(r.id) + '">Decline</button>' +
                 '</div>' +
             '</div>';
         }).join('') + '</div>' : '<div class="spx-empty">No requests waiting.</div>';
@@ -326,9 +300,10 @@
         return html;
     }
 
-    function adminAccounts() {
-        var accounts = store.listAccounts();
-        return '<p class="spx-lede">Every account here was created by approving a request, except the administrator.</p>' +
+    async function adminAccounts(canManage) {
+        var accounts = await store.listAccounts();
+        return '<p class="spx-lede">Every account here was created by approving a request, except the administrator, ' +
+               'which is seeded server-side when the stack is deployed.</p>' +
             '<div class="spx-card">' + accounts.map(function (a) {
                 var tone = a.status === 'active' ? 'ok' : 'danger';
                 return '<div class="spx-row">' +
@@ -338,35 +313,33 @@
                             (a.mustChangePassword ? badge('password not yet changed', 'warn') : '') + '</div>' +
                         '<div class="spx-row-meta"><code>' + esc(a.username) + '</code>' +
                             (a.email ? ' · ' + esc(a.email) : '') + (a.org ? ' · ' + esc(a.org) : '') +
-                            '<br>Created ' + when(a.createdAt) +
-                            ' · Last signed in ' + (a.lastLoginAt ? when(a.lastLoginAt) : 'never') + '</div>' +
+                            '<br>Created ' + when(a.createdAt) + '</div>' +
                     '</div>' +
-                    (a.role === 'admin' ? '' : '<div class="spx-row-actions">' +
-                        '<button type="button" class="spx-btn spx-btn--ghost spx-btn--small" data-action="reissue" data-id="' + a.id + '">Reissue password</button>' +
+                    (!canManage || a.role === 'admin' ? '' : '<div class="spx-row-actions">' +
+                        '<button type="button" class="spx-btn spx-btn--ghost spx-btn--small" data-action="reissue" data-id="' + esc(a.id) + '">Reissue password</button>' +
                         (a.status === 'active'
-                            ? '<button type="button" class="spx-btn spx-btn--danger spx-btn--small" data-action="revoke" data-id="' + a.id + '">Revoke</button>'
-                            : '<button type="button" class="spx-btn spx-btn--ghost spx-btn--small" data-action="restore" data-id="' + a.id + '">Restore</button>') +
+                            ? '<button type="button" class="spx-btn spx-btn--danger spx-btn--small" data-action="revoke" data-id="' + esc(a.id) + '">Revoke</button>'
+                            : '<button type="button" class="spx-btn spx-btn--ghost spx-btn--small" data-action="restore" data-id="' + esc(a.id) + '">Restore</button>') +
                     '</div>') +
                 '</div>';
             }).join('') + '</div>';
     }
 
-    function adminActivity() {
-        var entries = store.listAudit(120);
-        return '<p class="spx-lede">Approvals, sign-ins, uploads and status changes, newest first.</p>' +
+    async function adminActivity() {
+        var entries = await store.listAudit();
+        return '<p class="spx-lede">Approvals, sign-ins, uploads and status changes, newest first. ' +
+               'Written server-side, so it records what actually happened rather than what a browser reported.</p>' +
             (entries.length ? '<div class="spx-card">' + entries.map(function (e) {
                 return '<div class="spx-row"><div class="spx-row-main">' +
                     '<div class="spx-row-title" style="font-size:0.87rem">' + esc(e.action) + '</div>' +
                     '<div class="spx-row-meta">' + esc(e.actor) + ' · ' + when(e.ts) +
                         (e.detail ? ' · ' + esc(e.detail) : '') + '</div>' +
                 '</div></div>';
-            }).join('') + '</div>' : '<div class="spx-empty">Nothing recorded yet.</div>') +
-            '<div class="spx-actions"><button type="button" class="spx-btn spx-btn--danger spx-btn--small" data-action="reset-portal">Erase all portal data</button></div>' +
-            '<p class="spx-hint" style="margin-top:0.5rem">Removes every account, request, submission and uploaded file from this browser. There is no undo.</p>';
+            }).join('') + '</div>' : '<div class="spx-empty">Nothing recorded yet.</div>');
     }
 
     /* -------------------------------------------------------------------------
-       Submission review — shared by the admin and internal team
+       Review — shared by the admin and the internal team
        ---------------------------------------------------------------------- */
     function verdictCounts(submission) {
         var counts = { verified: 0, review: 0, failed: 0, total: 0 };
@@ -386,11 +359,11 @@
         return { done: filled.length, total: required.length, pct: required.length ? Math.round(filled.length / required.length * 100) : 0 };
     }
 
-    function reviewList() {
-        var rows = store.listSubmissions();
+    async function reviewList() {
+        var rows = await store.listSubmissions();
         if (!rows.length) return '<div class="spx-empty">No partner has started a submission yet.</div>';
 
-        return '<p class="spx-lede">Every partner submission, with the automatic verification results already applied. ' +
+        return '<p class="spx-lede">Every partner submission, with the verification results the service produced on upload. ' +
                'Anything marked <em>needs review</em> or <em>failed</em> is waiting on a person.</p>' +
             '<div class="spx-card">' + rows.map(function (row) {
                 var s = row.submission;
@@ -414,17 +387,13 @@
             }).join('') + '</div>';
     }
 
-    var openSubmissionId = null;
-
-    function reviewDetail(accountId) {
-        var account = store.accountById(accountId);
-        var submission = store.getSubmission(accountId);
+    async function reviewDetail(accountId) {
+        var submission = await store.getSubmission(accountId);
         var profile = submission.profile || {};
 
         var html = '<div class="spx-actions" style="margin-top:0"><button type="button" class="spx-btn spx-btn--ghost spx-btn--small" data-action="close-submission">← All submissions</button></div>';
         html += '<h3 class="spx-section-title">' + esc(profile.filmTitle || 'Untitled film') + '</h3>';
         html += '<div class="spx-card"><div class="spx-row-meta">' +
-            '<strong>' + esc(account ? (account.org || account.name) : accountId) + '</strong><br>' +
             checklist.profileFields.reduce(function (acc, group) {
                 return acc.concat(group.fields.filter(function (f) {
                     return f.type !== 'checkbox' && profile[f.id];
@@ -434,7 +403,6 @@
             }, []).join('<br>') +
             '</div></div>';
 
-        /* Disclosures and confirmations are the part a reviewer must actually read. */
         var ticked = checklist.profileFields
             .filter(function (g) { return g.group === 'Disclosures' || g.group === 'Seller confirmations'; })
             .reduce(function (acc, g) { return acc.concat(g.fields.filter(function (f) { return f.type === 'checkbox'; })); }, [])
@@ -442,7 +410,8 @@
                 return '<div class="spx-check-row" data-status="' + (profile[f.id] ? 'pass' : 'skip') + '">' +
                     '<span class="spx-check-dot"></span><div class="spx-check-text"><span>' + esc(f.label) + '</span></div></div>';
             }).join('');
-        html += '<h3 class="spx-section-title">Disclosures &amp; confirmations</h3><div class="spx-card"><div class="spx-checks" style="border:0;padding:0;background:none">' + ticked + '</div>' +
+        html += '<h3 class="spx-section-title">Disclosures &amp; confirmations</h3><div class="spx-card">' +
+            '<div class="spx-checks" style="border:0;padding:0;background:none">' + ticked + '</div>' +
             (profile.disclosures ? '<div class="spx-excerpt" style="margin-top:0.7rem">' + esc(profile.disclosures) + '</div>' : '') + '</div>';
 
         html += '<h3 class="spx-section-title">Documents</h3>';
@@ -458,7 +427,7 @@
                 '<div class="spx-doc-section-body">' + filed.map(function (d) {
                     return '<div class="spx-doc"><div class="spx-doc-info"><div class="spx-doc-label">' +
                         '<span class="spx-doc-ref">' + esc(d.ref) + '</span>' + esc(d.label) + '</div></div>' +
-                        renderFiles(d, submission.docs[d.id] || [], true) + '</div>';
+                        renderFiles(d, submission.docs[d.id] || [], accountId, true) + '</div>';
                 }).join('') + '</div></details>';
         }).join('') || '<div class="spx-empty">Nothing uploaded yet.</div>';
 
@@ -474,18 +443,18 @@
         if (submission.notes && submission.notes.length) {
             html += '<h3 class="spx-section-title">History</h3><div class="spx-card">' + submission.notes.slice().reverse().map(function (n) {
                 return '<div class="spx-row"><div class="spx-row-main"><div class="spx-row-title" style="font-size:0.87rem">' +
-                    esc(n.status) + '</div><div class="spx-row-meta">' + esc(n.by) + ' · ' + when(n.ts) + '<br>' + esc(n.text) + '</div></div></div>';
+                    esc(n.status) + '</div><div class="spx-row-meta">' + esc(n.by) + ' · ' + when(n.ts) +
+                    (n.text ? '<br>' + esc(n.text) : '') + '</div></div></div>';
             }).join('') + '</div>';
         }
         return html;
     }
 
     /* -------------------------------------------------------------------------
-       Partner: profile form
+       Partner
        ---------------------------------------------------------------------- */
-    function partnerProfile() {
-        var session = store.session();
-        var submission = store.getSubmission(session.accountId);
+    async function partnerProfile() {
+        var submission = await store.getSubmission('me');
         var profile = submission.profile || {};
 
         return renderFlash() +
@@ -507,14 +476,11 @@
             '</form>';
     }
 
-    /* -------------------------------------------------------------------------
-       Partner: documents
-       ---------------------------------------------------------------------- */
     function renderChecks(rec) {
         var v = rec.verification;
         if (!v) return '';
         return '<div class="spx-checks" id="checks-' + esc(rec.fileId) + '" hidden>' +
-            v.checks.map(function (c) {
+            (v.checks || []).map(function (c) {
                 return '<div class="spx-check-row" data-status="' + esc(c.status) + '">' +
                     '<span class="spx-check-dot"></span>' +
                     '<div class="spx-check-text"><strong>' + esc(c.label) + '</strong><span>' + esc(c.detail) + '</span></div>' +
@@ -524,7 +490,7 @@
         '</div>';
     }
 
-    function renderFiles(docCfg, records, readOnly) {
+    function renderFiles(docCfg, records, accountId, readOnly) {
         if (!records.length) return '';
         return '<div class="spx-files">' + records.map(function (rec) {
             var v = rec.verification || {};
@@ -532,9 +498,11 @@
             return '<div class="spx-file" data-verdict="' + esc(v.verdict || '') + '">' +
                 '<div class="spx-file-head">' +
                     '<span class="spx-file-name">' + esc(rec.name) + '</span>' +
-                    '<span class="spx-file-meta">' + esc(verify.formatBytes(rec.size)) + ' · ' + when(rec.uploadedAt) + '</span>' +
+                    '<span class="spx-file-meta">' + esc(formatBytes(rec.size)) + ' · ' + when(rec.uploadedAt) + '</span>' +
                     badge(meta.label, meta.tone) +
                     '<button type="button" class="spx-file-toggle" data-action="toggle-checks" data-id="' + esc(rec.fileId) + '">Details</button>' +
+                    '<button type="button" class="spx-file-toggle" data-action="open-file" data-id="' + esc(rec.fileId) + '"' +
+                        ' data-doc="' + esc(docCfg.id) + '" data-account="' + esc(accountId || '') + '">Open</button>' +
                     (readOnly ? '' : '<button type="button" class="spx-btn spx-btn--danger spx-btn--small" data-action="remove-file" data-doc="' + esc(docCfg.id) + '" data-id="' + esc(rec.fileId) + '">Remove</button>') +
                 '</div>' +
                 renderChecks(rec) +
@@ -542,9 +510,8 @@
         }).join('') + '</div>';
     }
 
-    function partnerDocuments() {
-        var session = store.session();
-        var submission = store.getSubmission(session.accountId);
+    async function partnerDocuments() {
+        var submission = await store.getSubmission('me');
         var profile = submission.profile || {};
         var prog = completeness(submission);
 
@@ -559,9 +526,9 @@
             '<div class="spx-progress-track"><div class="spx-progress-fill" style="width:' + prog.pct + '%"></div></div>' +
             '<div class="spx-progress-label">' + prog.done + ' / ' + prog.total + ' required</div></div>';
 
-        html += '<p class="spx-lede">Every file is checked as it is uploaded: the real format is read from the bytes, ' +
-                'a SHA-256 fingerprint catches the same document filed twice, and where the document has a text layer we ' +
-                'read it for the wording, identifiers, signature block and dates the requirement expects. ' +
+        html += '<p class="spx-lede">Files go straight to encrypted storage, then the service checks them: the real format ' +
+                'is read from the bytes, a SHA-256 fingerprint catches the same document filed twice, and where the document ' +
+                'has a text layer it is read for the wording, identifiers, signature block and dates the requirement expects. ' +
                 'A scan with no text layer is marked <em>needs review</em> rather than passed.</p>';
 
         html += checklist.sections.filter(function (section) {
@@ -569,7 +536,6 @@
         }).map(function (section) {
             var required = section.docs.filter(function (d) { return d.required; });
             var done = required.filter(function (d) { return (submission.docs[d.id] || []).length; });
-            var uploaded = section.docs.reduce(function (n, d) { return n + (submission.docs[d.id] || []).length; }, 0);
             var complete = required.length && done.length === required.length;
 
             return '<details class="spx-doc-section" data-section="' + esc(section.id) + '"' +
@@ -597,7 +563,7 @@
                                         icon('plus') + (records.length ? 'Add another' : 'Upload') + '</button>') +
                             '</div>' +
                         '</div>' +
-                        renderFiles(d, records) +
+                        renderFiles(d, records, 'me') +
                     '</div>';
                 }).join('') + '</div></details>';
         }).join('');
@@ -608,18 +574,20 @@
             badge('Status: ' + submission.status, submission.status === 'accepted' ? 'ok' : 'muted') +
         '</div><p class="spx-status" role="status"></p>';
 
+        if (submission.notes && submission.notes.length) {
+            var latest = submission.notes[submission.notes.length - 1];
+            if (latest.status === 'returned' && latest.text) {
+                html = note('<strong>Returned for changes:</strong> ' + esc(latest.text), 'warn') + html;
+            }
+        }
         return html;
     }
 
-    /* -------------------------------------------------------------------------
-       Partner: closing readiness
-       ---------------------------------------------------------------------- */
-    function partnerClosing() {
-        var session = store.session();
-        var submission = store.getSubmission(session.accountId);
+    async function partnerClosing() {
+        var submission = await store.getSubmission('me');
 
         return '<p class="spx-lede">The documents that must be in hand before closing. Each line turns green once every ' +
-               'document behind it has been filed and cleared automatic verification.</p>' +
+               'document behind it has been filed and cleared verification.</p>' +
             '<div class="spx-card">' + checklist.closing.map(function (item) {
                 var docs = item.docs.map(function (id) { return checklist.get(id); }).filter(Boolean);
                 var filed = docs.filter(function (d) { return (submission.docs[d.id] || []).length; });
@@ -647,10 +615,8 @@
        ---------------------------------------------------------------------- */
     function tabsFor(role) {
         if (role === 'admin') {
-            var pending = 0;
-            try { pending = store.listRequests('pending').length; } catch (e) {}
             return [
-                { id: 'requests', label: 'Access requests', count: pending },
+                { id: 'requests', label: 'Access requests' },
                 { id: 'accounts', label: 'Accounts' },
                 { id: 'submissions', label: 'Submissions' },
                 { id: 'activity', label: 'Activity' }
@@ -669,61 +635,46 @@
         ];
     }
 
-    function viewConsole() {
-        var session = store.session();
+    async function viewConsole(session) {
         var tabs = tabsFor(session.role);
         if (!activeTab || !tabs.some(function (t) { return t.id === activeTab; })) activeTab = tabs[0].id;
 
-        var titles = {
-            admin: 'Administrator console',
-            internal: 'Internal team',
-            partner: 'Partner portal'
-        };
-
+        var titles = { admin: 'Administrator console', internal: 'Internal team', partner: 'Partner portal' };
         var html;
+
         if (session.role === 'admin') {
-            html = activeTab === 'requests' ? adminRequests()
-                 : activeTab === 'accounts' ? adminAccounts()
-                 : activeTab === 'activity' ? adminActivity()
-                 : (openSubmissionId ? reviewDetail(openSubmissionId) : reviewList());
+            html = activeTab === 'requests' ? await adminRequests()
+                 : activeTab === 'accounts' ? await adminAccounts(true)
+                 : activeTab === 'activity' ? await adminActivity()
+                 : (openSubmissionId ? await reviewDetail(openSubmissionId) : await reviewList());
         } else if (session.role === 'internal') {
-            html = activeTab === 'accounts' ? adminAccounts()
-                 : (openSubmissionId ? reviewDetail(openSubmissionId) : reviewList());
+            html = activeTab === 'accounts' ? await adminAccounts(false)
+                 : (openSubmissionId ? await reviewDetail(openSubmissionId) : await reviewList());
         } else {
-            html = activeTab === 'profile' ? partnerProfile()
-                 : activeTab === 'closing' ? partnerClosing()
-                 : partnerDocuments();
+            html = activeTab === 'profile' ? await partnerProfile()
+                 : activeTab === 'closing' ? await partnerClosing()
+                 : await partnerDocuments();
         }
 
         return {
             eyebrow: 'Spherecho',
             title: titles[session.role] || 'Portal',
-            width: session.role === 'partner' || session.role === 'admin' || session.role === 'internal' ? 'wide' : 'narrow',
+            width: 'wide',
             tabs: tabs,
             html: (session.role === 'admin' && activeTab !== 'requests' ? credentialCard() : '') + html
         };
     }
 
-    function currentView() {
-        var session = store.session();
+    async function currentView() {
+        if (pendingChallenge) return viewChallenge();
         if (view === 'request') return viewRequest();
-        if (!session) {
-            if (!store.hasAdmin()) return viewBootstrap();
-            return viewLogin();
-        }
-        if (session.mustChangePassword) return viewChangePassword();
-        return viewConsole();
+
+        var session = store.session();
+        if (!session || !session.accountId) return viewLogin();
+        return viewConsole(session);
     }
 
-    function render() {
-        /* Remember which document sections are expanded before the DOM is
-           replaced — an upload re-renders the whole tab, and collapsing the
-           section the partner is working in would be maddening. */
-        Array.prototype.forEach.call(bodyEl.querySelectorAll('.spx-doc-section[data-section]'), function (el) {
-            openSections[el.getAttribute('data-section')] = el.open;
-        });
-
-        var v = currentView();
+    function paint(v) {
         var session = store.session();
 
         eyebrowEl.textContent = v.eyebrow;
@@ -734,17 +685,16 @@
             tabsEl.hidden = false;
             tabsEl.innerHTML = v.tabs.map(function (t) {
                 return '<button type="button" class="spx-tab" role="tab" data-action="tab" data-tab="' + t.id + '"' +
-                    ' aria-selected="' + (t.id === activeTab) + '">' + esc(t.label) +
-                    (t.count != null ? '<span class="spx-tab-count" data-zero="' + (t.count === 0) + '">' + t.count + '</span>' : '') +
-                    '</button>';
+                    ' aria-selected="' + (t.id === activeTab) + '">' + esc(t.label) + '</button>';
             }).join('');
         } else {
             tabsEl.hidden = true;
             tabsEl.innerHTML = '';
         }
 
-        if (session && !session.mustChangePassword) {
-            whoamiEl.innerHTML = '<strong>' + esc(session.name || session.username) + '</strong>' + esc(session.username) + ' · ' + esc(session.role);
+        if (session && session.accountId && !pendingChallenge) {
+            whoamiEl.innerHTML = '<strong>' + esc(session.name || session.username) + '</strong>' +
+                esc(session.username) + ' · ' + esc(session.role);
             whoamiEl.hidden = false;
             headSignOut.hidden = false;
         } else {
@@ -756,76 +706,106 @@
         bodyEl.scrollTop = 0;
     }
 
+    function loading() {
+        bodyEl.innerHTML = '<div class="spx-empty"><span class="spx-busy">' +
+            '<span class="spx-spinner"></span>Loading…</span></div>';
+    }
+
+    async function render() {
+        /* Remember which document sections are expanded before the DOM is
+           replaced — an upload re-renders the whole tab, and collapsing the
+           section the partner is working in would be maddening. */
+        Array.prototype.forEach.call(bodyEl.querySelectorAll('.spx-doc-section[data-section]'), function (el) {
+            openSections[el.getAttribute('data-section')] = el.open;
+        });
+
+        var token = ++renderToken;
+        var slow = setTimeout(function () { if (token === renderToken) loading(); }, 180);
+
+        var v;
+        try {
+            v = await currentView();
+        } catch (err) {
+            /* A dropped session lands back on sign-in rather than an error wall. */
+            if (err.status === 401 || err.status === 403) {
+                store.logout();
+                setFlash(err.message, 'error');
+                v = viewLogin();
+            } else {
+                v = {
+                    eyebrow: 'Spherecho', title: 'Portal', width: 'narrow', tabs: null,
+                    html: note(esc(err.message || 'Something went wrong.'), 'danger') +
+                        '<div class="spx-actions"><button type="button" class="spx-btn spx-btn--ghost" data-action="retry">Try again</button></div>'
+                };
+            }
+        }
+
+        clearTimeout(slow);
+        if (token !== renderToken) return;     /* a newer render already won */
+        paint(v);
+    }
+
     /* -------------------------------------------------------------------------
-       Upload handling
+       Uploads
        ---------------------------------------------------------------------- */
     async function handleFiles(docId, fileList) {
         var session = store.session();
         if (!session || session.role !== 'partner') return;
 
         var cfg = checklist.get(docId);
-        var submission = store.getSubmission(session.accountId);
         var files = Array.prototype.slice.call(fileList);
         if (!cfg || !files.length) return;
         if (!cfg.multiple) files = files.slice(0, 1);
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
-            busyDocs[docId] = 'Verifying ' + file.name + '…';
-            render();
+            busyDocs[docId] = 'Uploading ' + file.name + '…';
+            await render();
 
             try {
-                var result = await verify.file(file, cfg, {
-                    profile: submission.profile || {},
-                    knownHashes: store.knownHashes()
+                var record = await store.uploadDocument(docId, file, function (stage) {
+                    busyDocs[docId] = stage + '…';
                 });
-
-                var fileId = 'f_' + (result.evidence.sha256 || Date.now().toString(16)).slice(0, 16) + '_' + Date.now().toString(36);
-                await store.files.put(fileId, file);
-
-                store.addDocument(session.accountId, docId, {
-                    fileId: fileId,
-                    name: file.name,
-                    size: file.size,
-                    mime: file.type,
-                    sha256: result.evidence.sha256 || '',
-                    uploadedAt: Date.now(),
-                    verification: result
-                });
-
-                if (result.verdict === 'failed') {
+                if (record.verification && record.verification.verdict === 'failed') {
                     setFlash(file.name + ' did not pass verification — open Details on the file to see why.', 'error');
                 }
             } catch (err) {
-                console.error('[portal] upload failed', err);
-                setFlash('Could not process ' + file.name + ': ' + err.message, 'error');
+                setFlash('Could not upload ' + file.name + ': ' + err.message, 'error');
             } finally {
                 delete busyDocs[docId];
             }
         }
-        render();
+        await render();
     }
 
     /* -------------------------------------------------------------------------
        Events
        ---------------------------------------------------------------------- */
     var ACTIONS = {
-        'go-request': function () { view = 'request'; render(); },
-        'go-login': function () { view = 'login'; render(); },
+        'go-request': async function () { view = 'request'; await render(); },
+        'go-login': async function () { view = 'login'; await render(); },
+        'retry': async function () { await render(); },
 
-        'tab': function (el) {
+        'tab': async function (el) {
             activeTab = el.getAttribute('data-tab');
             openSubmissionId = null;
-            render();
+            await render();
         },
 
-        'logout': function () {
+        'logout': async function () {
             store.logout();
             view = 'login';
             activeTab = null;
             openSubmissionId = null;
             credential = null;
-            render();
+            pendingChallenge = null;
+            await render();
+        },
+
+        'cancel-challenge': async function () {
+            pendingChallenge = null;
+            view = 'login';
+            await render();
         },
 
         'copy': async function (el) {
@@ -837,11 +817,11 @@
                 setTimeout(function () { el.textContent = original; }, 1600);
             } catch (e) {
                 setFlash('Copy is blocked in this browser — select the text manually.', 'warn');
-                render();
+                await render();
             }
         },
 
-        'dismiss-credential': function () { credential = null; render(); },
+        'dismiss-credential': async function () { credential = null; await render(); },
 
         'approve': async function (el) {
             try {
@@ -849,15 +829,15 @@
                 credential = { username: result.username, password: result.password, name: result.account.name };
                 setFlash('Account created for ' + result.account.name + '. The credentials below are shown once.', 'ok');
             } catch (e) { setFlash(e.message, 'error'); }
-            render();
+            await render();
         },
 
-        'reject': function (el) {
+        'reject': async function (el) {
             var reason = global.prompt('Reason for declining (optional, shared with nobody automatically):', '');
             if (reason === null) return;
-            try { store.rejectRequest(el.getAttribute('data-id'), reason); setFlash('Request declined.', 'ok'); }
+            try { await store.rejectRequest(el.getAttribute('data-id'), reason); setFlash('Request declined.', 'ok'); }
             catch (e) { setFlash(e.message, 'error'); }
-            render();
+            await render();
         },
 
         'reissue': async function (el) {
@@ -867,41 +847,33 @@
                 credential = { username: result.username, password: result.password, name: result.username };
                 setFlash('New password issued. Shown once.', 'ok');
             } catch (e) { setFlash(e.message, 'error'); }
-            render();
+            await render();
         },
 
-        'revoke': function (el) {
+        'revoke': async function (el) {
             if (!global.confirm('Revoke this account? They will not be able to sign in.')) return;
-            try { store.setAccountStatus(el.getAttribute('data-id'), 'revoked'); } catch (e) { setFlash(e.message, 'error'); }
-            render();
+            try { await store.setAccountStatus(el.getAttribute('data-id'), 'revoked'); }
+            catch (e) { setFlash(e.message, 'error'); }
+            await render();
         },
 
-        'restore': function (el) {
-            try { store.setAccountStatus(el.getAttribute('data-id'), 'active'); } catch (e) { setFlash(e.message, 'error'); }
-            render();
+        'restore': async function (el) {
+            try { await store.setAccountStatus(el.getAttribute('data-id'), 'active'); }
+            catch (e) { setFlash(e.message, 'error'); }
+            await render();
         },
 
-        'reset-portal': async function () {
-            if (!global.confirm('Erase every account, request and uploaded document from this browser? There is no undo.')) return;
-            if (!global.confirm('Really erase everything?')) return;
-            await store.reset();
-            view = 'login';
-            activeTab = null;
-            credential = null;
-            render();
-        },
+        'open-submission': async function (el) { openSubmissionId = el.getAttribute('data-id'); await render(); },
+        'close-submission': async function () { openSubmissionId = null; await render(); },
 
-        'open-submission': function (el) { openSubmissionId = el.getAttribute('data-id'); render(); },
-        'close-submission': function () { openSubmissionId = null; render(); },
-
-        'set-status': function (el) {
+        'set-status': async function (el) {
             var form = bodyEl.querySelector('[data-form="review-decision"]');
             var noteText = form ? form.elements.note.value.trim() : '';
             try {
-                store.setSubmissionStatus(el.getAttribute('data-id'), el.getAttribute('data-status'), noteText);
+                await store.setSubmissionStatus(el.getAttribute('data-id'), el.getAttribute('data-status'), noteText);
                 setFlash('Submission marked ' + el.getAttribute('data-status') + '.', 'ok');
             } catch (e) { setFlash(e.message, 'error'); }
-            render();
+            await render();
         },
 
         'upload': function (el) {
@@ -921,39 +893,44 @@
             }
         },
 
-        'remove-file': async function (el) {
-            if (!global.confirm('Remove this file from the submission?')) return;
-            var session = store.session();
-            try { await store.removeDocument(session.accountId, el.getAttribute('data-doc'), el.getAttribute('data-id')); }
-            catch (e) { setFlash(e.message, 'error'); }
-            render();
-        },
-
-        'submit-dossier': function () {
-            var session = store.session();
-            var submission = store.getSubmission(session.accountId);
-            var profile = submission.profile || {};
-            var prog = completeness(submission);
-
-            var missingConfirmations = ['confirmOwnership', 'confirmEncumbrance', 'confirmDues', 'confirmLitigation', 'confirmAccuracy']
-                .filter(function (k) { return !profile[k]; });
-
-            if (missingConfirmations.length) {
-                setStatus('Tick every Seller confirmation on the Entity & film tab before submitting.', 'error');
+        'open-file': async function (el) {
+            var original = el.textContent;
+            el.textContent = 'Opening…';
+            try {
+                var url = await store.documentUrl(
+                    el.getAttribute('data-account') || 'me',
+                    el.getAttribute('data-doc'),
+                    el.getAttribute('data-id')
+                );
+                global.open(url, '_blank', 'noopener');
+            } catch (e) {
+                setFlash(e.message, 'error');
+                await render();
                 return;
             }
-            if (prog.done < prog.total) {
-                if (!global.confirm(prog.total - prog.done + ' required document(s) are still missing. Submit anyway?')) return;
+            el.textContent = original;
+        },
+
+        'remove-file': async function (el) {
+            if (!global.confirm('Remove this file from the submission?')) return;
+            try { await store.removeDocument('me', el.getAttribute('data-doc'), el.getAttribute('data-id')); }
+            catch (e) { setFlash(e.message, 'error'); }
+            await render();
+        },
+
+        'submit-dossier': async function () {
+            try {
+                await store.submitDossier('me');
+                setFlash('Submitted for review. You can keep uploading — we will see the updates.', 'ok');
+            } catch (e) {
+                setStatus(e.message, 'error');
+                return;
             }
-            store.setSubmissionStatus(session.accountId, 'submitted', 'Submitted by the partner.');
-            setFlash('Submitted for review. You can keep uploading — we will see the updates.', 'ok');
-            render();
+            await render();
         }
     };
 
     async function onClick(e) {
-        /* The listener is bound to the scrim, so anything this finds is already
-           inside the portal — head, tab strip or body alike. */
         var el = e.target.closest('[data-action]');
         if (!el) return;
         var action = el.getAttribute('data-action');
@@ -963,41 +940,40 @@
     }
 
     var FORMS = {
-        'bootstrap': async function (values) {
-            await store.createAdmin(values);
-            setFlash('Administrator created. You are signed in.', 'ok');
-            view = 'console';
-            render();
-        },
-
         'login': async function (values) {
-            await store.login(values.username, values.password);
+            var result = await store.login(values.username, values.password);
+            if (result && result.challenge === 'NEW_PASSWORD_REQUIRED') {
+                pendingChallenge = { username: result.username, session: result.session };
+                await render();
+                return;
+            }
             view = 'console';
             activeTab = null;
-            render();
+            await render();
         },
 
-        'request': function (values) {
-            store.createRequest(values);
+        'challenge': async function (values) {
+            if (values.next !== values.confirm) throw new Error('The two passwords do not match.');
+            await store.respondToChallenge(pendingChallenge.username, pendingChallenge.session, values.next);
+            pendingChallenge = null;
+            view = 'console';
+            activeTab = null;
+            setFlash('Password set. You are signed in.', 'ok');
+            await render();
+        },
+
+        'request': async function (values) {
+            await store.createRequest(values);
             view = 'login';
             setFlash('Request sent. The administrator will review it and issue your credentials.', 'ok');
-            render();
+            await render();
         },
 
-        'change-password': async function (values) {
-            if (values.next !== values.confirm) throw new Error('The two new passwords do not match.');
-            var session = store.session();
-            await store.changePassword(session.accountId, values.current, values.next);
-            setFlash('Password updated.', 'ok');
-            render();
-        },
-
-        'profile': function (values) {
-            var session = store.session();
-            store.saveProfile(session.accountId, values);
+        'profile': async function (values) {
+            await store.saveProfile('me', values);
             setFlash('Details saved. Uploads will now be cross-checked against them.', 'ok');
             activeTab = 'documents';
-            render();
+            await render();
         }
     };
 
@@ -1011,7 +987,7 @@
         if (!handler) return;
 
         var button = form.querySelector('button[type="submit"]');
-        if (button) { button.disabled = true; }
+        if (button) button.disabled = true;
         setStatus('Working…');
 
         try {
@@ -1041,15 +1017,24 @@
         else if (!e.shiftKey && doc.activeElement === last) { e.preventDefault(); first.focus(); }
     }
 
-    function open() {
+    async function open() {
         lastFocused = doc.activeElement;
-        view = store.session() ? 'console' : 'login';
-        render();
+        var session = store.session();
+        view = session ? 'console' : 'login';
+
         scrim.hidden = false;
         requestAnimationFrame(function () { scrim.classList.add('is-open'); });
         scrollLock = doc.body.style.overflow;
         doc.body.style.overflow = 'hidden';
         doc.addEventListener('keydown', onKey);
+
+        /* A stored token may have been revoked since the tab was opened; find
+           out now rather than on the first click. */
+        if (session && !session.accountId) {
+            try { await store.refreshSession(); } catch (e) { store.logout(); }
+        }
+        await render();
+
         var firstInput = bodyEl.querySelector('input, select, textarea, button');
         if (firstInput) firstInput.focus();
     }
@@ -1068,8 +1053,6 @@
     /* -------------------------------------------------------------------------
        Boot
        ---------------------------------------------------------------------- */
-    var headSignOut;
-
     function mount() {
         scrim = doc.getElementById('spxPortal');
         if (!scrim) return;
@@ -1084,9 +1067,7 @@
         headSignOut = scrim.querySelector('[data-action="logout"]');
         fileInput = scrim.querySelector('#spxFileInput');
 
-        scrim.addEventListener('click', function (e) {
-            if (e.target === scrim) close();
-        });
+        scrim.addEventListener('click', function (e) { if (e.target === scrim) close(); });
         scrim.querySelector('.spx-close').addEventListener('click', close);
         scrim.addEventListener('click', onClick);
         scrim.addEventListener('submit', onSubmit);
@@ -1100,7 +1081,6 @@
         var tab = doc.getElementById('spxLoginTab');
         if (tab) tab.addEventListener('click', open);
 
-        /* Deep link: /#portal opens straight into the sign-in sheet. */
         if (global.location.hash === '#portal') open();
     }
 

@@ -1,1 +1,4 @@
 .vercel
+node_modules/
+.aws-sam/
+samconfig.toml
