@@ -466,29 +466,33 @@
         /* 3 — hash, then look for the same bytes already uploaded elsewhere -- */
         var sha256 = await sha256Hex(buffer);
         evidence.sha256 = sha256;
-        var duplicate = (context.knownHashes || []).filter(function (k) { return k.sha256 === sha256; })[0];
-        if (duplicate) {
-            /* Whose copy this is changes both the verdict and what we may say
-               about it. Within one submission we can name the other slot,
-               because the partner filed both. Across submissions we must not:
-               the file name and the requirement it sits under belong to
-               somebody else's deal. It is still worth flagging — the same
-               signed PDF appearing on two sellers' paperwork is a question for
-               a person — but it is not this partner's mistake, so it does not
-               fail their upload. */
-            var sameAccount = !duplicate.accountId || !context.accountId ||
-                              duplicate.accountId === context.accountId;
+        /* A hash can match several stored files at once — the same PDF filed
+           twice by this partner and also, separately, by another. Which one we
+           report is not arbitrary: pick the most specific match, because that
+           is the one that decides the verdict. Taking whichever the index
+           happened to return first made this depend on account-id ordering. */
+        var matches = (context.knownHashes || []).filter(function (k) { return k.sha256 === sha256; });
+        var ours = matches.filter(function (k) {
+            return !k.accountId || !context.accountId || k.accountId === context.accountId;
+        });
+        var sameSlot = ours.filter(function (k) { return k.docId === doc.id; })[0];
+        var elsewhereInOurs = ours[0];
+        var otherParty = matches.filter(function (k) {
+            return k.accountId && context.accountId && k.accountId !== context.accountId;
+        })[0];
 
-            if (sameAccount && duplicate.docId === doc.id) {
-                checks.push(check('duplicate', 'Not a duplicate', 'fail',
-                    'This exact file is already uploaded against this requirement.'));
-            } else if (sameAccount) {
-                checks.push(check('duplicate', 'Not a duplicate', 'warn',
-                    'Byte-identical to “' + duplicate.name + '” filed under ' + labelFor(duplicate.docId) + '.'));
-            } else {
-                checks.push(check('duplicate', 'Not a duplicate', 'warn',
-                    'Byte-identical to a document already filed on a different submission.'));
-            }
+        if (sameSlot) {
+            checks.push(check('duplicate', 'Not a duplicate', 'fail',
+                'This exact file is already uploaded against this requirement.'));
+        } else if (elsewhereInOurs) {
+            /* Both copies are this partner's, so naming the other slot helps. */
+            checks.push(check('duplicate', 'Not a duplicate', 'warn',
+                'Byte-identical to “' + elsewhereInOurs.name + '” filed under ' + labelFor(elsewhereInOurs.docId) + '.'));
+        } else if (otherParty) {
+            /* Someone else's deal: worth a person's attention, but we disclose
+               neither the file name nor the requirement it sits under. */
+            checks.push(check('duplicate', 'Not a duplicate', 'warn',
+                'Byte-identical to a document already filed on a different submission.'));
         } else {
             checks.push(check('duplicate', 'Not a duplicate', 'pass', 'SHA-256 ' + sha256.slice(0, 12) + '…'));
         }
