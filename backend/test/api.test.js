@@ -256,6 +256,29 @@ async function call(ports, method, p, { token, body, query } = {}) {
     ok('the same partner re-filing the same file into the same slot fails',
         f3.body.document.verification.verdict === 'failed', f3.body.document.verification.verdict);
 
+    console.log('\n-- a decompression bomb does not take the service down --');
+    /* A few hundred KB of compressed zeros that inflates to 600 MB. Unbounded,
+       this exhausts the Lambda's memory; the engine reads inflate output against
+       a budget and abandons the stream instead. */
+    require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'make-bomb.js')]);
+    const bombBytes = fs.readFileSync(path.join(FIXTURES, 'zip-bomb.pdf'));
+    const pb = await call(ports, 'POST', '/documents/upload-url', {
+        token: partnerToken,
+        body: { docId: 'seller.corporate', name: 'zip-bomb.pdf', size: bombBytes.length, contentType: 'application/pdf' }
+    });
+    const bombGrant = ports.files._consume(pb.body.uploadUrl.split('/_files/')[1]);
+    ports.files._write(bombGrant.key, bombBytes);
+    const rssBefore = process.memoryUsage().rss;
+    const bombResult = await call(ports, 'POST', `/documents/${pb.body.fileId}/finalize`, {
+        token: partnerToken, body: { docId: 'seller.corporate' }
+    });
+    const grewMb = (process.memoryUsage().rss - rssBefore) / 1024 / 1024;
+    ok('the bomb is handled, not fatal', bombResult.status === 200, String(bombResult.status));
+    ok('...and memory stays bounded', grewMb < 250, `grew ${grewMb.toFixed(0)} MB`);
+    ok('...landing in review rather than passing',
+        bombResult.body.document.verification.verdict === 'review',
+        bombResult.body.document.verification.verdict);
+
     console.log('\n-- submit and review --');
     const submitted = await call(ports, 'POST', '/submissions/me/submit', { token: partnerToken });
     ok('partner submits', submitted.body.status === 'submitted', JSON.stringify(submitted.body));

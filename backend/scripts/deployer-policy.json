@@ -1,0 +1,60 @@
+{
+  "Version": "2012-10-17",
+  "Comment": "Minimum permissions for the IAM user or role that deploys this stack. Attach to a dedicated deploy identity, not to a person's everyday key.",
+  "Statement": [
+    {
+      "Sid": "CloudFormationAndSamArtifacts",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:*",
+        "s3:CreateBucket", "s3:PutObject", "s3:GetObject", "s3:ListBucket",
+        "s3:GetBucketLocation", "s3:PutBucketPolicy", "s3:PutBucketVersioning",
+        "s3:PutEncryptionConfiguration", "s3:PutBucketPublicAccessBlock",
+        "s3:PutBucketCORS", "s3:PutLifecycleConfiguration", "s3:PutBucketOwnershipControls",
+        "s3:GetBucketPolicy", "s3:GetEncryptionConfiguration", "s3:DeleteObject"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "TheStackResources",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:*",
+        "apigateway:*",
+        "dynamodb:CreateTable", "dynamodb:DescribeTable", "dynamodb:UpdateTable",
+        "dynamodb:DescribeContinuousBackups", "dynamodb:UpdateContinuousBackups",
+        "dynamodb:TagResource", "dynamodb:ListTagsOfResource",
+        "cognito-idp:CreateUserPool", "cognito-idp:DescribeUserPool",
+        "cognito-idp:UpdateUserPool", "cognito-idp:DeleteUserPool",
+        "cognito-idp:CreateUserPoolClient", "cognito-idp:DescribeUserPoolClient",
+        "cognito-idp:UpdateUserPoolClient", "cognito-idp:DeleteUserPoolClient",
+        "cognito-idp:CreateGroup", "cognito-idp:GetGroup", "cognito-idp:DeleteGroup",
+        "cognito-idp:SetUserPoolMfaConfig",
+        "logs:CreateLogGroup", "logs:DescribeLogGroups", "logs:PutRetentionPolicy",
+        "logs:DeleteLogGroup", "logs:TagResource"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "RoleForTheLambda",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole", "iam:GetRole", "iam:DeleteRole", "iam:PassRole",
+        "iam:AttachRolePolicy", "iam:DetachRolePolicy",
+        "iam:PutRolePolicy", "iam:GetRolePolicy", "iam:DeleteRolePolicy",
+        "iam:TagRole", "iam:ListRoleTags"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "SeedingTheAdministrator",
+      "Effect": "Allow",
+      "Action": [
+        "cognito-idp:AdminCreateUser", "cognito-idp:AdminAddUserToGroup",
+        "cognito-idp:AdminGetUser", "cognito-idp:ListUsersInGroup",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

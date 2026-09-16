@@ -20,7 +20,7 @@ Parameters:
 
 Globals:
   Function:
-    Runtime: nodejs20.x
+    Runtime: nodejs24.x
     Timeout: 30
     MemorySize: 1024
     Architectures: [arm64]
@@ -208,16 +208,20 @@ Resources:
         AllowHeaders: [authorization, content-type]
         AllowMethods: [GET, POST, PUT, DELETE, OPTIONS]
         MaxAge: 86400
-      Throttle:
-        BurstLimit: 50
-        RateLimit: 25
+      # HttpApi throttles per-route, not with the REST API's `Throttle`.
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 50
+        ThrottlingRateLimit: 25
 
   ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub '${AWS::StackName}-api'
-      CodeUri: src/
-      Handler: index.handler
+      # CodeUri is the backend root, not src/, because that is where
+      # package.json lives — point it at src/ and SAM finds no manifest and
+      # silently ships a bundle with no node_modules.
+      CodeUri: ./
+      Handler: src/index.handler
       Environment:
         Variables:
           TABLE_NAME: !Ref Table

@@ -20,34 +20,28 @@ which is when it reads the object and decides the verdict.
 
 ## Deploying
 
-Prerequisites: an AWS account, the [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html),
-and credentials with permission to create the resources in `template.yaml`.
+You need an AWS account and credentials for an identity that can create the
+resources in `template.yaml`. `scripts/deployer-policy.json` is the minimum
+permission set — attach it to a dedicated deploy user, not to somebody's
+everyday key.
 
 ```bash
 cd backend
 npm install
 
-# 1. Deploy. --guided asks for a stack name and region the first time and
-#    remembers them in samconfig.toml.
-npm run deploy
-
-#    When it asks for AllowedOrigins, give the site origins that will call the
-#    API, comma-separated and with no trailing slash, e.g.
-#      https://spherechoproductions.com,https://sphereco-production-git-....vercel.app
-
-# 2. Create the one administrator. Server-side, once.
-node scripts/seed-admin.js \
-  --stack <the stack name you chose> \
-  --username admin \
-  --email you@spherechoproductions.com \
-  --name "Your Name"
-
-# 3. Point the site at the API: copy the stack's ApiUrl output into
-#    portal/config.js as apiBase, then redeploy the site.
+./scripts/deploy.sh spherecho-portal ap-south-1 you@spherechoproductions.com \
+  "https://spherechoproductions.com,https://sphereco-production-git-....vercel.app"
 ```
 
-Sign in with the password `seed-admin.js` printed. Cognito will require you to
-replace it before it issues a token — the same flow every approved account gets.
+That validates the template, builds, deploys, smoke-tests `/health`, seeds the
+administrator and prints the API URL. Put that URL into `portal/config.js` as
+`apiBase`, commit, and let Vercel redeploy the site.
+
+Origins must have no trailing slash and must include every site origin that will
+call the API — the Vercel preview as well as the production domain.
+
+The administrator's one-time password is printed once. Cognito will require you
+to replace it on first sign-in.
 
 ### Deploying again
 
@@ -118,6 +112,20 @@ reading everything.
 **Verification runs server-side only.** `shared/verify.js` is the single
 canonical engine; the browser no longer runs it, so a verdict cannot be forged
 by editing client state.
+
+## What has and has not been exercised
+
+| | |
+| --- | --- |
+| Template validates (`sam validate --lint`) | yes |
+| Builds, with dependencies in the bundle (`sam build`) | yes |
+| Packaged handler answers real API Gateway v2 events | yes — health, 401, CORS preflight, 404 |
+| `ports/aws.js` loads and constructs all three adapters | yes |
+| **Round-trip against real DynamoDB / S3 / Cognito** | **no — needs an account** |
+| **`sam deploy` against real CloudFormation** | **no — needs an account** |
+
+Everything above the line was checked with the SAM CLI against the built
+artifact. Everything below it is the part that only a real deploy can settle.
 
 ## Not built yet
 

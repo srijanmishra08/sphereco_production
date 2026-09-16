@@ -84,13 +84,49 @@
        DecompressionStream is available in every browser that also gives us
        WebCrypto, so there is no library to ship.
        ---------------------------------------------------------------------- */
-    async function inflate(bytes, format) {
+    /* A deflate stream can expand enormously — a few hundred KB of compressed
+       zeros becomes gigabytes. We are inflating attacker-supplied PDFs on a
+       Lambda with fixed memory, so read the output incrementally against a
+       budget and abandon the stream rather than the process. An abandoned
+       stream reads as unextractable text, which lands the document in "needs
+       review" — the right answer for a file we could not safely open. */
+    var MAX_INFLATED_PER_STREAM = 32 * 1024 * 1024;
+    var MAX_INFLATED_PER_DOC = 96 * 1024 * 1024;
+
+    function newBudget() { return { remaining: MAX_INFLATED_PER_DOC, exhausted: false }; }
+
+    async function inflate(bytes, format, budget) {
         if (!global.DecompressionStream) return null;
+        var cap = Math.min(MAX_INFLATED_PER_STREAM, budget ? budget.remaining : MAX_INFLATED_PER_STREAM);
+        if (cap <= 0) { if (budget) budget.exhausted = true; return null; }
+
+        var reader;
         try {
             var ds = new global.DecompressionStream(format);
-            var stream = new Blob([bytes]).stream().pipeThrough(ds);
-            return new Uint8Array(await new Response(stream).arrayBuffer());
+            reader = new Blob([bytes]).stream().pipeThrough(ds).getReader();
+
+            var chunks = [];
+            var total = 0;
+            for (;;) {
+                var step = await reader.read();
+                if (step.done) break;
+                total += step.value.length;
+                if (total > cap) {
+                    if (budget) { budget.remaining = 0; budget.exhausted = true; }
+                    try { await reader.cancel(); } catch (e) { /* already closing */ }
+                    return null;
+                }
+                chunks.push(step.value);
+            }
+
+            if (budget) budget.remaining -= total;
+
+            var out = new Uint8Array(total);
+            var offset = 0;
+            for (var i = 0; i < chunks.length; i++) { out.set(chunks[i], offset); offset += chunks[i].length; }
+            return out;
         } catch (e) {
+            try { if (reader) await reader.cancel(); } catch (e2) { /* nothing to do */ }
             return null;
         }
     }
@@ -99,13 +135,15 @@
        DecompressionStream rejects any trailing junk, and the PDF spec puts an
        EOL between the stream data and `endstream` — so a byte or two of tail has
        to come off before the data will inflate at all. */
-    async function inflateEither(bytes) {
+    async function inflateEither(bytes, budget) {
         var candidates = [bytes];
         var trimmed = trimTrailingWhitespace(bytes);
         if (trimmed.length !== bytes.length) candidates.push(trimmed);
 
         for (var i = 0; i < candidates.length; i++) {
-            var out = (await inflate(candidates[i], 'deflate')) || (await inflate(candidates[i], 'deflate-raw'));
+            if (budget && budget.exhausted) return null;
+            var out = (await inflate(candidates[i], 'deflate', budget)) ||
+                      (await inflate(candidates[i], 'deflate-raw', budget));
             if (out) return out;
         }
         return null;
@@ -189,8 +227,10 @@
         var chunks = [];
         var searchFrom = 0;
         var guard = 0;
+        var budget = newBudget();
 
         while (guard++ < 4000) {
+            if (budget.exhausted) break;
             var start = raw.indexOf('stream', searchFrom);
             if (start === -1) break;
             var end = raw.indexOf('endstream', start);
@@ -223,7 +263,7 @@
 
             var text;
             if (/\/FlateDecode/.test(dict)) {
-                var inflated = await inflateEither(slice);
+                var inflated = await inflateEither(slice, budget);
                 if (!inflated) continue;
                 text = latin1(inflated);
             } else if (/\/Filter/.test(dict)) {
@@ -258,8 +298,10 @@
         var results = [];
         var offset = 0;
         var guard = 0;
+        var budget = newBudget();
 
         while (guard++ < 500) {
+            if (budget.exhausted) break;
             var sigAt = raw.indexOf('PK\x03\x04', offset);
             if (sigAt === -1) break;
 
@@ -277,7 +319,7 @@
             if (!compressedSize) continue;      /* streamed entry — size lives in the trailer */
 
             var slice = bytes.subarray(dataAt, dataAt + compressedSize);
-            var xmlBytes = method === 0 ? slice : await inflate(slice, 'deflate-raw');
+            var xmlBytes = method === 0 ? slice : await inflate(slice, 'deflate-raw', budget);
             if (!xmlBytes) continue;
 
             var xml = new TextDecoder('utf-8').decode(xmlBytes);
