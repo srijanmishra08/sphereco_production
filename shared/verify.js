@@ -468,11 +468,27 @@
         evidence.sha256 = sha256;
         var duplicate = (context.knownHashes || []).filter(function (k) { return k.sha256 === sha256; })[0];
         if (duplicate) {
-            var sameSlot = duplicate.docId === doc.id;
-            checks.push(check('duplicate', 'Not a duplicate', sameSlot ? 'fail' : 'warn',
-                sameSlot
-                    ? 'This exact file is already uploaded against this requirement.'
-                    : 'Byte-identical to “' + duplicate.name + '” filed under ' + labelFor(duplicate.docId) + '.'));
+            /* Whose copy this is changes both the verdict and what we may say
+               about it. Within one submission we can name the other slot,
+               because the partner filed both. Across submissions we must not:
+               the file name and the requirement it sits under belong to
+               somebody else's deal. It is still worth flagging — the same
+               signed PDF appearing on two sellers' paperwork is a question for
+               a person — but it is not this partner's mistake, so it does not
+               fail their upload. */
+            var sameAccount = !duplicate.accountId || !context.accountId ||
+                              duplicate.accountId === context.accountId;
+
+            if (sameAccount && duplicate.docId === doc.id) {
+                checks.push(check('duplicate', 'Not a duplicate', 'fail',
+                    'This exact file is already uploaded against this requirement.'));
+            } else if (sameAccount) {
+                checks.push(check('duplicate', 'Not a duplicate', 'warn',
+                    'Byte-identical to “' + duplicate.name + '” filed under ' + labelFor(duplicate.docId) + '.'));
+            } else {
+                checks.push(check('duplicate', 'Not a duplicate', 'warn',
+                    'Byte-identical to a document already filed on a different submission.'));
+            }
         } else {
             checks.push(check('duplicate', 'Not a duplicate', 'pass', 'SHA-256 ' + sha256.slice(0, 12) + '…'));
         }

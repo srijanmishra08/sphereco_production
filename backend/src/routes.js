@@ -464,7 +464,7 @@ const routes = [
             const verification = await verify.file(
                 { name: pending.name, bytes },
                 cfg,
-                { profile: submission.profile || {}, knownHashes }
+                { profile: submission.profile || {}, knownHashes, accountId: s.accountId }
             );
 
             const record = {

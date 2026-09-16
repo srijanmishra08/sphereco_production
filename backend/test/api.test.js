@@ -208,6 +208,54 @@ async function call(ports, method, p, { token, body, query } = {}) {
     });
     ok('finalize without a started upload refused', forgedFinalize.status === 404);
 
+    console.log('\n-- a different partner filing the same bytes --');
+    /* Approve a second partner, sign them in, and upload a file the first
+       partner already filed. It must be flagged, but it is not their mistake
+       and they must not learn anything about the other submission. */
+    await call(ports, 'POST', '/requests', {
+        body: { name: 'Neha Rao', email: 'neha@sunfilms.in', org: 'Sun Films LLP', type: 'partner' }
+    });
+    const pendingNow = (await call(ports, 'GET', '/requests', { token: adminToken, query: { status: 'pending' } })).body.requests;
+    const secondCreds = (await call(ports, 'POST', `/requests/${pendingNow[0].id}/approve`, { token: adminToken })).body;
+    const secondChallenge = await call(ports, 'POST', '/auth/login', {
+        body: { username: secondCreds.username, password: secondCreds.password }
+    });
+    const secondToken = (await call(ports, 'POST', '/auth/challenge', {
+        body: { username: secondCreds.username, session: secondChallenge.body.session, newPassword: 'sun-films-2026-xy' }
+    })).body.accessToken;
+
+    const sameBytes = fs.readFileSync(path.join(FIXTURES, 'gst-certificate.pdf'));
+    const p2 = await call(ports, 'POST', '/documents/upload-url', {
+        token: secondToken,
+        body: { docId: 'seller.gst', name: 'gst-certificate.pdf', size: sameBytes.length, contentType: 'application/pdf' }
+    });
+    const grant2 = ports.files._consume(p2.body.uploadUrl.split('/_files/')[1]);
+    ports.files._write(grant2.key, sameBytes);
+    const f2 = await call(ports, 'POST', `/documents/${p2.body.fileId}/finalize`, {
+        token: secondToken, body: { docId: 'seller.gst' }
+    });
+    const crossCheck = f2.body.document.verification.checks.find((c) => c.id === 'duplicate');
+    ok('another partner filing the same bytes is flagged', crossCheck && crossCheck.status === 'warn',
+        JSON.stringify(crossCheck));
+    ok('...but it does not fail their upload', f2.body.document.verification.verdict !== 'failed',
+        f2.body.document.verification.verdict);
+    ok('...and it does not leak the other submission',
+        crossCheck && !/gst-certificate|Meridian|GST registration/.test(crossCheck.detail),
+        crossCheck && crossCheck.detail);
+
+    /* The same partner re-filing into the same slot is still a hard stop. */
+    const p3 = await call(ports, 'POST', '/documents/upload-url', {
+        token: secondToken,
+        body: { docId: 'seller.gst', name: 'gst-certificate.pdf', size: sameBytes.length, contentType: 'application/pdf' }
+    });
+    const grant3 = ports.files._consume(p3.body.uploadUrl.split('/_files/')[1]);
+    ports.files._write(grant3.key, sameBytes);
+    const f3 = await call(ports, 'POST', `/documents/${p3.body.fileId}/finalize`, {
+        token: secondToken, body: { docId: 'seller.gst' }
+    });
+    ok('the same partner re-filing the same file into the same slot fails',
+        f3.body.document.verification.verdict === 'failed', f3.body.document.verification.verdict);
+
     console.log('\n-- submit and review --');
     const submitted = await call(ports, 'POST', '/submissions/me/submit', { token: partnerToken });
     ok('partner submits', submitted.body.status === 'submitted', JSON.stringify(submitted.body));
@@ -220,27 +268,28 @@ async function call(ports, method, p, { token, body, query } = {}) {
     })).body.accessToken;
 
     const queue = await call(ports, 'GET', '/submissions', { token: internalToken });
-    ok('internal sees the partner submission', queue.body.submissions.length === 1, String(queue.body.submissions.length));
+    ok('internal sees the partner submissions', queue.body.submissions.length === 2, String(queue.body.submissions.length));
     ok('internal sees the verification results',
-        Object.keys(queue.body.submissions[0].submission.docs).length >= 4);
+        queue.body.submissions.some((r) => Object.keys(r.submission.docs).length >= 4));
     ok('internal cannot approve access requests',
         (await call(ports, 'POST', `/requests/${internalReq.id}/approve`, { token: internalToken })).status === 403);
     ok('internal cannot read the audit log',
         (await call(ports, 'GET', '/audit', { token: internalToken })).status === 403);
 
-    const decision = await call(ports, 'POST', `/submissions/${queue.body.submissions[0].accountId}/status`, {
+    const target = queue.body.submissions.find((r) => Object.keys(r.submission.docs).length >= 4);
+    const decision = await call(ports, 'POST', `/submissions/${target.accountId}/status`, {
         token: internalToken, body: { status: 'returned', note: 'Chain of title still incomplete.' }
     });
     ok('internal records a decision', decision.body.status === 'returned');
 
-    const badStatus = await call(ports, 'POST', `/submissions/${queue.body.submissions[0].accountId}/status`, {
+    const badStatus = await call(ports, 'POST', `/submissions/${target.accountId}/status`, {
         token: internalToken, body: { status: 'obliterated' }
     });
     ok('unknown status refused', badStatus.status === 400);
 
     console.log('\n-- revocation --');
     const accounts = await call(ports, 'GET', '/accounts', { token: adminToken });
-    const partnerAccount = accounts.body.accounts.find((a) => a.role === 'partner');
+    const partnerAccount = accounts.body.accounts.find((a) => a.username === partnerCreds.username);
     ok('accounts carry live status', partnerAccount.status === 'active', JSON.stringify(partnerAccount));
     await call(ports, 'POST', `/accounts/${partnerAccount.id}/status`, { token: adminToken, body: { status: 'revoked' } });
     const afterRevoke = await call(ports, 'POST', '/auth/login', {
